@@ -25,6 +25,8 @@ enum types{
 	ecurly,
 	variable,
 	separater,//the &
+	breaker,//( to represent
+	continuer//) to represent
 }
 enum variable_type{
 	number(f64),
@@ -85,6 +87,8 @@ fn lexer(codet:String)->(Vec<types>,Vec<String>){
 				else if i=="]"{chartype.push(types::elist);chartemp.push(i.to_string());}
 				else if i=="{"{chartype.push(types::scurly);chartemp.push(i.to_string());}
 				else if i=="}"{chartype.push(types::ecurly);chartemp.push(i.to_string());}
+				else if i=="("{chartype.push(types::breaker);chartemp.push(i.to_string());}
+				else if i==")"{chartype.push(types::continuera);chartemp.push(i.to_string());}
 				else if i=="&"{chartype.push(types::separater);chartemp.push(i.to_string());}
 				else{chartype.push(types::variable);chartemp.push(i.to_string());}
 			}
