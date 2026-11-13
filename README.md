@@ -8,3 +8,4 @@
 4. in print lekker dont use comma(,) to separate,you dont need comma,just simply use "" as separate between variables and variables,also it wont auto jump to next line so remember to add "\n" (the print will always flush first)
 5. lekker use ^ and ~ to represent True and False
 6. ( as break and ) as continue
+7. in print you use "" to separate,dont use , it wont work on lekker, "," is only for list item separation
