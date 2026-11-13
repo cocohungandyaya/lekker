@@ -1,4 +1,4 @@
-//lekker is a programming language(percise as interpreter) built based on rust (before it can bootstrap itself)
+//lekker is a high-level programming language(percise as interpreter)with low-level syntax,build based on rust without any external crate(before it can bootstrap itself)
 /*expect syntax(current version):
 	#x{12.9*31}; //# for setting the value(all will be mutable) of name between # and < inside <> and end with;
 	!print{"12.9*31="x}; //function between ! and < are decide for what to do <> and abandoning the , also can do @x if need call gobal value(set outside loop)
