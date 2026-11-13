@@ -8,3 +8,4 @@
 4. in print lekker dont use comma(,) to separate,you dont need comma,just simply use "" as separate between variables and variables,also it wont auto jump to next line so remember to add "\n" (the print will always flush first)
 5. lekker use ^ and ~ to represent True and False
 6. instead of using comma(which will cause some conflict) to separate stuff,lekker use &,for example: ["sigma"&x&[3.14&^&~]]
+7. ( as break and ) as continue
