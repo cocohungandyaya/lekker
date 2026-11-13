@@ -62,13 +62,15 @@ fn lexer(codet:String)->(Vec<types>,Vec<String>){
 	(chartype,chartemp)
 }
 //recieve the result from lexer and start check the grammar also merge the char and types into one Vec<variable_type>
-//remember to create a whole new enum for this
+//remember to create a whole new enum for this like enum store everything so it can execute it i guess
 fn parser(bruh:(Vec<types>,Vec<String>)){}
+
 struct lekker{
-	codebyblock:Vec<String>,
+	codebyblock:Vec<String>,//also change this cuz this struct only do execution like become Vec<??>
 	global_variable:HashMap<String,variable_type>,
 	temp:Vec<HashMap<String,variable_type>>,
 	local_variable:HashMap<String,variable_type>,
+	current_block:usize
 }
 fn main(){
 	let path:Vec<_>=env::args().collect();
