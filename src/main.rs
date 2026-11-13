@@ -45,12 +45,19 @@ enum fncall{
 	lif,//l for lekker
 	lelse,//l for lekker
 	intolist,//separating "" so it become a list
+	fsread,
+	fswrite,//both for future bruh
 }
 enum func{
 	function(fncall),//perform the !
 	pullfromglobal,//perform the @
 	assign,//perform the #
 	fnset,//perform the $
+}
+enum everything{
+	fnc(func),
+	var(variable_type),
+	ltype(types),
 }
 //extract all into char and label with different types
 fn lexer(codet:String)->(Vec<types>,Vec<String>){
@@ -88,7 +95,7 @@ fn lexer(codet:String)->(Vec<types>,Vec<String>){
 fn parser(bruh:(Vec<types>,Vec<String>)){}
 
 struct lekker{
-	codebyblock:Vec<String>,//also change this cuz this struct only do execution like become Vec<??>
+	codebyblock:Vec<everything>,//also change this cuz this struct only do execution like become Vec<??>
 	global_variable:HashMap<String,variable_type>,
 	temp:Vec<HashMap<String,variable_type>>,
 	local_variable:HashMap<String,variable_type>,
