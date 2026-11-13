@@ -3,7 +3,7 @@
 	#x{12.9*31}; //# for setting the value(all will be mutable) of name between # and < inside <> and end with;
 	!print{"12.9*31="x}; //function between ! and < are decide for what to do <> and abandoning the , also can do @x if need call gobal value(set outside loop)
 	#y{!input{}}; //well you can do this
-	#z{["sigma",x,[y,12.3]]};
+	#z{["sigma"&x&[y&12.3]]};
 	//also deciding the and or not also () become:!and{condition1,condition2}...you got it and also the comparasion stuff,all embed to function(like !LOET{condition1,condition2} which represented larger or equal to) and the bracket become !{} also the if else also embeded to function and also loop will not count indentation but curly bracket number like !loop{}
 	also somehow forgot but will use $ as setting a function/module
 */
@@ -24,6 +24,7 @@ enum types{
 	scurly,
 	ecurly,
 	variable,
+	separater,//the &
 }
 enum variable_type{
 	number(f64),
@@ -84,6 +85,7 @@ fn lexer(codet:String)->(Vec<types>,Vec<String>){
 				else if i=="]"{chartype.push(types::elist);chartemp.push(i.to_string());}
 				else if i=="{"{chartype.push(types::scurly);chartemp.push(i.to_string());}
 				else if i=="}"{chartype.push(types::ecurly);chartemp.push(i.to_string());}
+				else if i=="&"{chartype.push(types::separater);chartemp.push(i.to_string());}
 				else{chartype.push(types::variable);chartemp.push(i.to_string());}
 			}
 		}
