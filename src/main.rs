@@ -5,6 +5,7 @@
 	#y{!input{}}; //well you can do this
 	#z{["sigma",x,[y,12.3]]};
 	//also deciding the and or not also () become:!and{condition1,condition2}...you got it and also the comparasion stuff,all embed to function(like !LOET{condition1,condition2} which represented larger or equal to) and the bracket become !{} also the if else also embeded to function and also loop will not count indentation but curly bracket number like !loop{}
+	also somehow forgot but will use $ as setting a function/module
 */
 use std::collections::HashMap;
 use std::env;
@@ -30,6 +31,27 @@ enum variable_type{
 	boolean(bool),
 	list(Vec<variable_type>),
 }
+enum fncall{
+	print,
+	input,
+	equal,
+	lt,//larger than
+	st,//smaller than
+	not,
+	and,
+	or,
+	bracket,//for performing () if it is !{}
+	lloop,//l for lekker
+	lif,//l for lekker
+	lelse,//l for lekker
+	intolist,//separating "" so it become a list
+}
+enum func{
+	function(fncall),//perform the !
+	pullfromglobal,//perform the @
+	assign,//perform the #
+	fnset,//perform the $
+}
 //extract all into char and label with different types
 fn lexer(codet:String)->(Vec<types>,Vec<String>){
 	let mut chartype:Vec<types>=Vec::new();
@@ -49,7 +71,7 @@ fn lexer(codet:String)->(Vec<types>,Vec<String>){
 				if "1234567890.".contains(&i){chartype.push(types::number);chartemp.push(i.to_string());}
 				else if "+=-*/%".contains(&i){chartype.push(types::maths);chartemp.push(i.to_string());}
 				else if "^~".contains(&i){chartype.push(types::boolean);chartemp.push(i.to_string());}
-				else if "!#{}@".contains(&i){chartype.push(types::function);chartemp.push(i.to_string());}
+				else if "!#@$".contains(&i){chartype.push(types::function);chartemp.push(i.to_string());}
 				else if i==";"{chartype.push(types::end);chartemp.push(i.to_string());}
 				else if i=="["{chartype.push(types::slist);chartemp.push(i.to_string());}
 				else if i=="]"{chartype.push(types::elist);chartemp.push(i.to_string());}
