@@ -1,0 +1,5 @@
+#y{["sigma",@x,3.141592]};
+
+!print{"Hello World!"};
+
+#x{!input{}?};
