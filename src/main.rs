@@ -141,7 +141,7 @@ fn parser_init(bruh:(Vec<types>,Vec<String>))->(Vec<Vec<types>>,Vec<Vec<String>>
 }
 //here will try merge each code block or flag error
 //damn maybe stop coding 2 hour later,i need study chinese test bruh
-fn parser_second(damn:(Vec<Vec<types>>,Vec<Vec<String>>){
+fn parser_second(damn:(Vec<Vec<types>>,Vec<Vec<String>>)){
 	let (cdtype,cdtemp)=damn;
 	for i in 0..cdtype.len(){
 		for j in 0..cdtype[i].len(){
