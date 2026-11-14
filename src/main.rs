@@ -101,7 +101,7 @@ fn lexer(codet:String)->(Vec<types>,Vec<String>){
 				if "1234567890.".contains(&i){chartype.push(types::number);chartemp.push(i.to_string());}
 				else if "+-*/".contains(&i){chartype.push(types::maths);chartemp.push(i.to_string());}
 				else if "^~".contains(&i){chartype.push(types::boolean);chartemp.push(i.to_string());}
-				else if "!#@$".contains(&i){chartype.push(types::function);chartemp.push(i.to_string());}
+				else if "!#$".contains(&i){chartype.push(types::function);chartemp.push(i.to_string());}//put @to variable instead of a function
 				else if i==";"{chartype.push(types::end);chartemp.push(i.to_string());}
 				else if i=="?"{chartype.push(types::innerend);chartemp.push(i.to_string());}
 				else if i=="["{chartype.push(types::slist);chartemp.push(i.to_string());}
@@ -145,7 +145,7 @@ fn parser_second(damn:(Vec<Vec<types>>,Vec<Vec<String>>){
 	let (cdtype,cdtemp)=damn;
 	for i in 0..cdtype.len(){
 		for j in 0..cdtype[i].len(){
-			//errrrrr here try merge then,write tmr today kinda tired from this ass
+			//errrrrr here try merge then,write tmr today kinda tired from this ass also write a enum instead of a vec to store in this step
 		}
 	}
 }
