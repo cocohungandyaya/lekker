@@ -22,7 +22,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::process::exit;
-#[derive(Debug,Clone)]
+#[derive(Debug,Clone,PartialEq)]
 enum types{
 	end,
 	innerend,
@@ -42,6 +42,19 @@ enum types{
 	breaker,//( to represent
 	continuer,//) to represent
 	attribute,// the || which used for the |x,y| also maybe for if else condition checking
+}//POV:you wake up at 12:22 and first thing you do is coding bruh,i need get a job holly
+enum action{
+	assign{varname:String,value:variable_type},
+	call{varname:String,global:bool},
+	function{fnname:String,attributes:Vec<variable_type>,inneraction:Box<action>},
+	modset{modname:String,attributes:Vec<String>},//urrr i think i kinda suck bruh forgot about my chinese test again fahhhh
+	add{left:variable_type,right:variable_type},
+	minus{left:variable_type,right:variable_type},
+	times{left:variable_type,right:variable_type},
+	devide{left:variable_type,right:variable_type},
+	wrapper(Box<action>),
+	breaker,
+	continuer,
 }
 enum variable_type{
 	number(f64),
@@ -132,7 +145,7 @@ fn parser_init(bruh:(Vec<types>,Vec<String>))->(Vec<Vec<types>>,Vec<Vec<String>>
 	let mut ctemp:Vec<String>=Vec::new();
 	for i in 0..chartype.len(){
 		match chartype[i]{
-			types::end=>{blocktemp.0.push(temp);blocktemp.1.push(ctemp.clone());temp=Vec::new()},
+			types::end=>{blocktemp.0.push(temp);blocktemp.1.push(ctemp.clone());temp=Vec::new();ctemp=Vec::new();},
 			_=>{temp.push(chartype[i].clone());ctemp.push(chartemp[i].clone());},
 		}
 	}//i think done the init separation? later will check grammar inside each temp adn ctemp i guess
@@ -141,16 +154,46 @@ fn parser_init(bruh:(Vec<types>,Vec<String>))->(Vec<Vec<types>>,Vec<Vec<String>>
 }
 //here will try merge each code block or flag error
 //damn maybe stop coding 2 hour later,i need study chinese test bruh
-fn parser_second(damn:(Vec<Vec<types>>,Vec<Vec<String>>)){
+fn parser_second(damn:(Vec<Vec<types>>,Vec<Vec<String>>))->(Vec<Vec<types>>,Vec<Vec<String>>){
 	let (cdtype,cdtemp)=damn;
+	let mut temp_tlist:Vec<types>=Vec::new();
+	let mut temp_clist:Vec<String>=Vec::new();
+	let mut final_merged:(Vec<Vec<types>>,Vec<Vec<String>>)=(Vec::new(),Vec::new());
 	for i in 0..cdtype.len(){
 		for j in 0..cdtype[i].len(){
-			//errrrrr here try merge then,write tmr today kinda tired from this ass also write a enum instead of a vec to store in this step
+//fahhh now 13:00 bruh ytd(actually today) sleep at 6am bruh holly kinda tired bruh fahhhhhhhhhhhhhhhhh
+//first might be merging each char into meaningful small blocks in a code block
+//ロキシー・ミグルディアは最高!!!!!gugugaga...might just stop coding at 2 pm bruh i need study chinese bruh
+//errr what to write actually...Songs that write by Tana.H is absolute cinema bruh also 9lana voice just superb bruh
+//errr joblessssss,best unemployed moment huh...i dont want to go to school bruh school suck...
+//fahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+//i think might be add things to the list and check if same type so then merge them into same cell?? who knows bruh
+//"iris out" is a good song pal...just maybe a little bit too loud,suggest lower the volume to listen(i mean the original not other cover)
+//now 13:34!? err half hour writing nothing i kinda suck bruh
+//oh yeah so lekker code will be all start with like !#$ that is it so maybe that easier to code!? like get first and then till {  i guess?
+//yeah seems the facts is now is 13:40 and i know how bruh cuz all start with !#$ so just get the first and check if it is uhh...function?
+//song:シャーデンフロイデ / ぐちり feat. 音街ウナ absolute cinema must watch pal...
+//golden brown also absolute cinema actually my fav bruh
+//kinda tired i dont want coding...bruh you know what i do? spend 48 minutes writing comments and actually write onlt 5 line of codes...err get a job...
+			if j>0{//holly where is the bug oh jeez...bruh i found it, not here,here is perfect the problem is parser_init ctemp forgot to reset bruh
+				if cdtype[i][j]== temp_tlist[temp_tlist.len()-1]{
+//here do merging yeah maybe parser_second only do merging then not even error flagging bruh holly i suck maybe parser_third do the error flagging i guess?
+//omg i hate errors so fucking annoying
+					let id=temp_clist.len();
+					temp_clist[id-1]=format!("{}{}",temp_clist[id-1],cdtemp[i][j].clone());
+				}//that is it!?
+				else{temp_tlist.push(cdtype[i][j].clone());temp_clist.push(cdtemp[i][j].clone());}
+			}else{temp_tlist.push(cdtype[i][j].clone());temp_clist.push(cdtemp[i][j].clone());}
+			//err and rese the two temp_tlist i guess and make a final
 		}
+		final_merged.0.push(temp_tlist);final_merged.1.push(temp_clist);
+		temp_tlist=Vec::new();
+		temp_clist=Vec::new();
 	}
-}
+	final_merged
+}//finally done this... somehow i suppose can done in 30 min but i used 1 hour to write tons of useless comments bruh holly i really suck bruh
 struct lekker{
-	codebyblock:String,//uhh change it later then
+	codebyblock:Vec<action>,//uhh change it later then
 	global_variable:HashMap<String,variable_type>,
 	temp:Vec<HashMap<String,variable_type>>,
 	local_variable:HashMap<String,variable_type>,
@@ -169,5 +212,7 @@ fn main(){
 		println!("code lexed:{:?}\n\nraw:{:?}",a,b);
 		let  (c,d)=parser_init((a,b));
 		println!("\nfirst init prarsed:{:?}\n\nraw init parsed:{:?}",c,d);
+		let  (e,f)=parser_second((c,d));
+		println!("\nfirst second prarsed:{:?}\n\nraw second parsed:{:?}",e,f);
 	}	
 }
