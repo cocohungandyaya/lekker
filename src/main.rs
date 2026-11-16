@@ -27,7 +27,6 @@ enum types{
 	end,
 	innerend,
 	function,
-	maths,
 	number,
 	string,
 	boolean,//^ || ~ to represent
@@ -35,24 +34,19 @@ enum types{
 	elist,
 	scurly,
 	ecurly,
-	svarb,
-	evarb,//the |x,y| during $sigma|x,y|{
 	variable,
-	separater,//the , which cant use in print
-	breaker,//( to represent
-	continuer,//) to represent
+	separater,//the , which can use in print
 	attribute,// the || which used for the |x,y| also maybe for if else condition checking
 }//POV:you wake up at 12:22 and first thing you do is coding bruh,i need get a job holly
 enum action{
-	assign{varname:String,value:variable_type},
+	assign{varname:String,value:Box<action>},
 	call{varname:String,global:bool},
-	function{fnname:String,attributes:Vec<variable_type>,inneraction:Box<action>},
-	modset{modname:String,attributes:Vec<String>},//urrr i think i kinda suck bruh forgot about my chinese test again fahhhh
-	add{left:variable_type,right:variable_type},
-	minus{left:variable_type,right:variable_type},
-	times{left:variable_type,right:variable_type},
-	devide{left:variable_type,right:variable_type},
-	wrapper(Box<action>),
+	function{fnname:functions,attributes:Vec<action>,inneraction:Vec<action>},
+	modset{modname:functions,attributes:Vec<action>,inneraction:Vec<action>},//urrr i think i kinda suck bruh forgot about my chinese test again fahhhh
+	number(f64),
+	string(String),
+	boolean(bool),
+	list(Vec<variable_type>),
 	breaker,
 	continuer,
 }
@@ -86,8 +80,18 @@ enum functions{
 	fsread,
 	fswrite,//both for future bruh
 	funcnamed(String),//for module like $sigma||{};
-	get,//for access the variables inside a list !get|x|{[index,index]};
+	get,//for access the variables inside a list !get|[index,index]|{x};
+	change,//for change the variables indide a list !change|[index,index],change|{x}
+	append,//for add variables in a list !append|[index,index],variable|{x}
+	remove,//for remove variables
 	import,//for future to make import library bruh
+	len,
+	add,
+	minus,
+	divide,
+	times,
+	breaker,
+	continuer,
 }
 enum func{
 	callfunction,//perform the !
@@ -112,7 +116,6 @@ fn lexer(codet:String)->(Vec<types>,Vec<String>){
 			else if i=="\'"{iibk=!iibk;chartype.push(types::string);chartemp.push(i.to_string());}
 			else if !" \t\n".contains(&i){
 				if "1234567890.".contains(&i){chartype.push(types::number);chartemp.push(i.to_string());}
-				else if "+-*/".contains(&i){chartype.push(types::maths);chartemp.push(i.to_string());}
 				else if "^~".contains(&i){chartype.push(types::boolean);chartemp.push(i.to_string());}
 				else if "!#$".contains(&i){chartype.push(types::function);chartemp.push(i.to_string());}//put @to variable instead of a function
 				else if i==";"{chartype.push(types::end);chartemp.push(i.to_string());}
@@ -121,8 +124,6 @@ fn lexer(codet:String)->(Vec<types>,Vec<String>){
 				else if i=="]"{chartype.push(types::elist);chartemp.push(i.to_string());}
 				else if i=="{"{chartype.push(types::scurly);chartemp.push(i.to_string());}
 				else if i=="}"{chartype.push(types::ecurly);chartemp.push(i.to_string());}
-				else if i=="("{chartype.push(types::breaker);chartemp.push(i.to_string());}
-				else if i==")"{chartype.push(types::continuer);chartemp.push(i.to_string());}
 				else if i==","{chartype.push(types::separater);chartemp.push(i.to_string());}
 				else if i=="|"{chartype.push(types::attribute);chartemp.push(i.to_string());}
 				else{chartype.push(types::variable);chartemp.push(i.to_string());}
@@ -192,8 +193,484 @@ fn parser_second(damn:(Vec<Vec<types>>,Vec<Vec<String>>))->(Vec<Vec<types>>,Vec<
 	}
 	final_merged
 }//finally done this... somehow i suppose can done in 30 min but i used 1 hour to write tons of useless comments bruh holly i really suck bruh
+fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->Vec<action>{
+	//here is probably for uhh flagging error and final merge
+	let (fah1,fah2)=fahhh;
+	let mut code_block=codeblock;
+	let mut ttemp:Vec<types>=Vec::new();
+	let mut ctemp:Vec<String>=Vec::new();
+	let mut ittemp:Vec<types>=Vec::new();
+	let mut ictemp:Vec<String>=Vec::new();
+	let mut lpnum:i32=0;
+	let mut been_loop:bool=false;
+	let mut final:Vec<action>=Vec::new();
+	for i in 0..fah1.len(){
+		been_loop=true;
+		for j in 0..fah1[i].len(){
+			match fah1[i][j].clone(){
+				types::scurly=>{lpnum+=1;if lpnum==1{continue;}},
+				types::ecurly=>{lpnum-=1;if lpnum==1{continue;}},
+			}
+			if lpnum<0{eprint!(codeblock.push(i);"Syntax Error:Missing Opening Bracket...Code_block:{:?}",codeblock);exit(1);}
+			else if lpnum >0 &&j==fah1[i].len()-1{codeblock.push(i);eprint!("Syntax Error:Missing Closing Bracket...Code_block:{:?}",codeblock);exit(1);}
+			else{
+				if lpnum==0{ttemp.push(fah1[i][j].clone());ctemp.push(fah2[i][j].clone());}
+				else{ittemp.push(fah1[i][j].clone());ictemp.push(fah2[i][j].clone());}
+			}
+		}
+//err my brain now got filled with 雨愛 (Rainie Love) i just dont get it,like it is a good song,why put it with 咒術迴戰->新宿決戰!? just ruined the song bruh holly
+//i am deciding add back , to uhh print bruh kinda suck might actually can just make a list for that bruh
+//to lower the risk of dumb people why dont make everything into functions like must use !{} sth like that? like even add minus all throw into function huh that way easier for me to check eror isnt it huh so i just change almost everything into a function except still the # and @ and $ bruh
+		//stuck here for an hour finally kinda understand what to do bruh
+		if ttemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Missing sth before bracket example:!print{};...Code_block:{}",codeblock);exit(1);}
+		else{
+			let mut fahtemp:Vec<types>=Vec::new();
+			let mut fahctemp:Vec<String>=Vec::new();
+			let mut inat:bool=false;
+			let mut attemp:Vec<types>=Vec::new();
+			let mut actemp:Vec<String>=Vec::new();//err i need rest bruh
+			let mut temp:Vec<action>=Vec::new();
+			let mut atemp:Vec<action>=Vec::new();
+			for x in 0..ttemp.len(){
+				if inat{
+					match ttemp[x].clone(){
+						type::attribute=>{inat =!inat;},
+						type::separater=>{},
+						_=>{attemp.push(ttemp[x].clone());actemp.push(ctemp[x].clone());},
+					}
+				}else{//arrr 1 hour wasted again god damn
+					match ttemp[x].clone(){
+						type::attribute=>{inat=!inat;},
+						type::variable=>{fahtemp.push(ttemp[x].clone());fahctemp.push(ctemp[x].clone());},
+						_=>{codeblock.push(i);eprint!("Type Error:Supposingly you should use type::variable for name/call/assign...Code_block:{}",codeblock);exit(1);},
+					}
+					
+				}
+			}
+			if fahtemp.len()>2{codeblock.push(i);eprint!("Syntax Error:Supposingly you should give only 2 args(not attribute) before a bracket...Code_block:{}",codeblock);exit(1);}
+			else if fahtemp.len()<2{
+				if "!"==fahctemp[0]{
+					if attemp.is_empty(){
+						if !ittemp.is_empty(){
+							//fahhh 1 hour pass again bruh
+							//i should split the ? but with counting the inloop num bruh
+							let mut inloop:i32=0;
+							let mut bruhtemp:Vec<types>=Vec::new();
+							let mut bruhctemp:Vec<String>=Vec::new();
+							let mut absolutetemp:Vec<types>=Vec::new();
+							let mut absolutectemp:Vec<String>=Vec::new();
+							//fahhh building up spaghetti code again jeez...
+							//初音ミク!!! yeah i am currently listening to a song call Miku(song by Anamanaguchi) yeah that is it,meaningless comments again bruh
+							for huh in 0..ittemp.len(){
+								//whatever even need rewrite just rewrite this part is okay bruh
+								match ittemp[huh].clone(){
+									types::innerend=>{
+										if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+										//ahh my brain is melting bruh
+										else if inloop==0{
+											bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+											bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+										}else{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());}
+										},
+									types::scurly=>{inloop+=1;continue;},
+									types::ecurly=>{inloop-=1;continue;},
+									_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+								}
+							}
+							//i not even sure is it ok bruh brain kinda cooked
+							final.push(action::function{fnname:functions::bracket,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp))});
+						}
+						else{//function{fnname:functions,attributes:Vec<action>,inneraction:Vec<action>}
+							final.push(action::function{fnname:functions::bracket,attributes:Vec::new(),inneraction:Vec::new()});
+						}
+					}else{
+						if !ittemp.is_empty(){
+							let mut inloop:i32=0;
+							let mut bruhtemp:Vec<types>=Vec::new();
+							let mut bruhctemp:Vec<String>=Vec::new();
+							let mut absolutetemp:Vec<types>=Vec::new();
+							let mut absolutectemp:Vec<String>=Vec::new();
+							for huh in 0..ittemp.len(){
+								match ittemp[huh].clone(){
+									types::innerend=>{
+										if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+										else if inloop==0{
+											bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+											bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+										}else{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());}
+										},
+									types::scurly=>{inloop+=1;continue;},
+									types::ecurly=>{inloop-=1;continue;},
+									_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+								}
+							}
+							temp=parser_third((bruhtemp,bruhctemp));
+							let mut inloop:i32=0;
+							let mut bruhtemp:Vec<types>=Vec::new();
+							let mut bruhctemp:Vec<String>=Vec::new();
+							let mut absolutetemp:Vec<types>=Vec::new();
+							let mut absolutectemp:Vec<String>=Vec::new();
+							for huh in 0..attemp.len(){
+								match attemp[huh].clone(){
+									types::innerend=>{
+										if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+										else if inloop==0{
+											bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+											bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+										}else{absolutetemp.push(attemp[huh].clone());absolutectemp.push(actemp[huh].clone());}
+										},
+									types::scurly=>{inloop+=1;continue;},
+									types::ecurly=>{inloop-=1;continue;},
+									types::separater=>{},
+									_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+								}
+							}
+							atemp=parser_third((bruhtemp,bruhctemp));
+								final.push(action::function{fnname:functions::bracket,attributes:atemp.clone(),inneraction:temp.clone()});
+						}
+						else{
+							temp=parser_third((bruhtemp,bruhctemp));
+							let mut inloop:i32=0;
+							let mut bruhtemp:Vec<types>=Vec::new();
+							let mut bruhctemp:Vec<String>=Vec::new();
+							let mut absolutetemp:Vec<types>=Vec::new();
+							let mut absolutectemp:Vec<String>=Vec::new();
+							for huh in 0..attemp.len(){
+								match attemp[huh].clone(){
+									types::innerend=>{
+										if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+										else if inloop==0{
+											bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+											bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+										}else{absolutetemp.push(attemp[huh].clone());absolutectemp.push(actemp[huh].clone());}
+										},
+									types::scurly=>{inloop+=1;continue;},
+									types::ecurly=>{inloop-=1;continue;},
+									types::separater=>{},
+									_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+								}
+							}
+							atemp=parser_third((bruhtemp,bruhctemp));
+							final.push(action::function{fnname:functions::bracket,attributes:atemp.clone(),inneraction:Vec::new()});
+						}
+					}
+				}
+				else{codeblock.push(i);eprint!("Syntax Error:Supposingly only ! can put nothing between it and the bracket...Code_block:{}",codeblock);exit(1);}
+			}
+			else{
+				if "!"==fahctemp[0]{
+					match fahtemp[1]{
+						types::variable{
+							let mut fahbruh:function;
+							if fahctemp[1]=="print"{fahbruh=function::print;}
+							else if fahtemp[1]=="input"{fahbruh=function::input;}
+							else if fahtemp[1]=="equal"{fahbruh=function::equal;}
+							else if fahtemp[1]=="lt"{fahbruh=function::lt;}
+							else if fahtemp[1]=="st"{fahbruh=function::st;}
+							else if fahtemp[1]=="not"{fahbruh=function::not;}
+							else if fahtemp[1]=="and"{fahbruh=function::and;}
+							else if fahtemp[1]=="or"{fahbruh=function::or;}
+							else if fahtemp[1]=="loop"{fahbruh=function::lloop;}
+							else if fahtemp[1]=="if"{fahbruh=function::lif;}
+							else if fahtemp[1]=="else"{fahbruh=function::lelse;}
+							else if fahtemp[1]=="intolist"{fahbruh=function::intolist;}
+							else if fahtemp[1]=="st"{fahbruh=function::st;}
+							else if fahtemp[1]=="fsread"{fahbruh=function::fsread;}
+							else if fahtemp[1]=="fswrite"{fahbruh=function::fswrite;}
+							else if fahtemp[1]=="get"{fahbruh=function::get;}
+							else if fahtemp[1]=="change"{fahbruh=function::change;}
+							else if fahtemp[1]=="append"{fahbruh=function::append;}
+							else if fahtemp[1]=="remove"{fahbruh=function::remove;}
+							else if fahtemp[1]=="import"{fahbruh=function::import;}
+							else if fahtemp[1]=="len"{fahbruh=function::len;}
+							else if fahtemp[1]=="add"{fahbruh=function::add;}
+							else if fahtemp[1]=="minus"{fahbruh=function::minus;}
+							else if fahtemp[1]=="divide"{fahbruh=function::divide;}
+							else if fahtemp[1]=="times"{fahbruh=function::times;}
+							else if fahtemp[1]=="break"{fahbruh=function::breaker;}
+							else if fahtemp[1]=="continue"{fahbruh=function::continuer;}
+							else{fahbruh=function::funcnamed(fahtemp[1].clone())}
+							if attemp.is_empty(){
+								if !ittemp.is_empty(){
+									let mut inloop:i32=0;
+									let mut bruhtemp:Vec<types>=Vec::new();
+									let mut bruhctemp:Vec<String>=Vec::new();
+									let mut absolutetemp:Vec<types>=Vec::new();
+									let mut absolutectemp:Vec<String>=Vec::new();
+									for huh in 0..ittemp.len(){
+										match ittemp[huh].clone(){
+											types::innerend=>{
+												if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+												else if inloop==0{
+													bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+													bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+												}else{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());}
+												},
+											types::scurly=>{inloop+=1;continue;},
+											types::ecurly=>{inloop-=1;continue;},
+											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+										}
+									}
+										final.push(action::function{fnname:fahbruh,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp))});
+								}
+								else{
+									final.push(action::function{fnname:fahbruh,attributes:Vec::new(),inneraction:Vec::new()});
+								}
+							}else{
+								if !ittemp.is_empty(){
+									let mut inloop:i32=0;
+									let mut bruhtemp:Vec<types>=Vec::new();
+									let mut bruhctemp:Vec<String>=Vec::new();
+									let mut absolutetemp:Vec<types>=Vec::new();
+									let mut absolutectemp:Vec<String>=Vec::new();
+									for huh in 0..ittemp.len(){
+										match ittemp[huh].clone(){
+											types::innerend=>{
+												if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+												else if inloop==0{
+													bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+													bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+												}else{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());}
+												},
+											types::scurly=>{inloop+=1;continue;},
+											types::ecurly=>{inloop-=1;continue;},
+											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+										}
+									}
+									temp=parser_third((bruhtemp,bruhctemp));
+									let mut inloop:i32=0;
+									let mut bruhtemp:Vec<types>=Vec::new();
+									let mut bruhctemp:Vec<String>=Vec::new();
+									let mut absolutetemp:Vec<types>=Vec::new();
+									let mut absolutectemp:Vec<String>=Vec::new();
+									for huh in 0..attemp.len(){
+										match attemp[huh].clone(){
+											types::innerend=>{
+												if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+												else if inloop==0{
+													bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+													bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+												}else{absolutetemp.push(attemp[huh].clone());absolutectemp.push(actemp[huh].clone());}
+												},
+											types::scurly=>{inloop+=1;continue;},
+											types::ecurly=>{inloop-=1;continue;},
+											types::separater=>{},
+											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+										}
+									}
+									atemp=parser_third((bruhtemp,bruhctemp));
+									final.push(action::function{fnname:fahbruh,attributes:atemp.clone(),inneraction:temp.clone()});
+								}
+								else{
+									temp=parser_third((bruhtemp,bruhctemp));
+									let mut inloop:i32=0;
+									let mut bruhtemp:Vec<types>=Vec::new();
+									let mut bruhctemp:Vec<String>=Vec::new();
+									let mut absolutetemp:Vec<types>=Vec::new();
+									let mut absolutectemp:Vec<String>=Vec::new();
+									for huh in 0..attemp.len(){
+										match attemp[huh].clone(){
+											types::innerend=>{
+												if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+												else if inloop==0{
+													bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+													bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+												}else{absolutetemp.push(attemp[huh].clone());absolutectemp.push(actemp[huh].clone());}
+												},
+											types::scurly=>{inloop+=1;continue;},
+											types::ecurly=>{inloop-=1;continue;},
+											types::separater=>{},
+											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+										}
+									}
+									atemp=parser_third((bruhtemp,bruhctemp));
+									final.push(action::function{fnname:fahbruh,attributes:atemp.clone(),inneraction:Vec::new()});
+								}
+							}
+						},
+						_=>{codeblock.push(i);eprint!("Syntax Error:Supposingly you should use variable type to call functions...Code_block:{}",codeblock);exit(1);}
+					}
+				}//ain no lie brain melting so fucking tired bruh this is horrible
+				//assign{varname:String,value:Box<action>}
+				else if "#"==fahctemp[0]{
+					match fahtemp[1]{
+						types::variable{
+							if attemp.is_empty(){
+								if !ittemp.is_empty(){
+									let mut inloop:i32=0;
+									let mut bruhtemp:Vec<types>=Vec::new();
+									let mut bruhctemp:Vec<String>=Vec::new();
+									let mut absolutetemp:Vec<types>=Vec::new();
+									let mut absolutectemp:Vec<String>=Vec::new();
+									for huh in 0..ittemp.len(){
+										match ittemp[huh].clone(){
+											types::innerend=>{
+												if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+												else if inloop==0{
+													bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+													bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+												}else{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());}
+												},
+											types::scurly=>{inloop+=1;continue;},
+											types::ecurly=>{inloop-=1;continue;},
+											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+										}
+									}
+									let blablabla=parser_third((bruhtemp,bruhctemp));
+									if blablala.len()>1{
+										codeblock.push(i);eprint!("Syntax Error:Supposingly you shouldnt put multiple stuff inside a assign function...Code_block:{}",codeblock);exit(1);}else{
+										final.push(action::assign{varname:fahctemp[1],value:Box::new(blablabla[0])});
+									}
+								}
+								else{
+									codeblock.push(i);eprint!("Syntax Error:Supposingly you should at least put sth inside the assign function...Code_block:{}",codeblock);exit(1);
+								}
+							}else{
+								codeblock.push(i);eprint!("Syntax Error:Supposingly there shouldnt be any attribute when assigning variables...Code_block:{}",codeblock);exit(1);
+							}
+						},
+						_=>{codeblock.push(i);eprint!("Syntax Error:Supposingly you should use variable type to assign functions...Code_block:{}",codeblock);exit(1);}
+					}
+				}
+				else if "$"==fahctemp[0]{
+					match fahtemp[1]{
+						types::variable{
+							let mut fahbruh:function;
+							if fahctemp[1]=="print"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="input"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="equal"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="lt"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="st"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="not"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="and"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="or"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="loop"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="if"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="else"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="intolist"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="st"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="fsread"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="fswrite"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="get"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="change"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="append"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="remove"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="import"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="len"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="add"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="minus"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="divide"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="times"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="break"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else if fahtemp[1]=="continue"{codeblock.push(i);eprint!("Syntax Error:you cant make module by the name of a preset function...Code_block:{}",codeblock);exit(1);}
+							else{fahbruh=function::funcnamed(fahtemp[1].clone())}
+							if attemp.is_empty(){
+								if !ittemp.is_empty(){
+									let mut inloop:i32=0;
+									let mut bruhtemp:Vec<types>=Vec::new();
+									let mut bruhctemp:Vec<String>=Vec::new();
+									let mut absolutetemp:Vec<types>=Vec::new();
+									let mut absolutectemp:Vec<String>=Vec::new();
+									for huh in 0..ittemp.len(){
+										match ittemp[huh].clone(){
+											types::innerend=>{
+												if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+												else if inloop==0{
+													bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+													bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+												}else{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());}
+												},
+											types::scurly=>{inloop+=1;continue;},
+											types::ecurly=>{inloop-=1;continue;},
+											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+										}
+									}
+										final.push(action::modset{modname:fahbruh,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp))});
+								}
+								else{
+									final.push(action::modset{modname:fahbruh,attributes:Vec::new(),inneraction:Vec::new()});
+								}
+							}else{
+								if !ittemp.is_empty(){
+									let mut inloop:i32=0;
+									let mut bruhtemp:Vec<types>=Vec::new();
+									let mut bruhctemp:Vec<String>=Vec::new();
+									let mut absolutetemp:Vec<types>=Vec::new();
+									let mut absolutectemp:Vec<String>=Vec::new();
+									for huh in 0..ittemp.len(){
+										match ittemp[huh].clone(){
+											types::innerend=>{
+												if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+												else if inloop==0{
+													bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+													bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+												}else{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());}
+												},
+											types::scurly=>{inloop+=1;continue;},
+											types::ecurly=>{inloop-=1;continue;},
+											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+										}
+									}
+									temp=parser_third((bruhtemp,bruhctemp));
+									let mut inloop:i32=0;
+									let mut bruhtemp:Vec<types>=Vec::new();
+									let mut bruhctemp:Vec<String>=Vec::new();
+									let mut absolutetemp:Vec<types>=Vec::new();
+									let mut absolutectemp:Vec<String>=Vec::new();
+									for huh in 0..attemp.len(){
+										match attemp[huh].clone(){
+											types::innerend=>{
+												if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+												else if inloop==0{
+													bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+													bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+												}else{absolutetemp.push(attemp[huh].clone());absolutectemp.push(actemp[huh].clone());}
+												},
+											types::scurly=>{inloop+=1;continue;},
+											types::ecurly=>{inloop-=1;continue;},
+											types::separater=>{},
+											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+										}
+									}
+									atemp=parser_third((bruhtemp,bruhctemp));
+									final.push(action::modset{modname:fahbruh,attributes:atemp.clone(),inneraction:temp.clone()});
+								}
+								else{
+									temp=parser_third((bruhtemp,bruhctemp));
+									let mut inloop:i32=0;
+									let mut bruhtemp:Vec<types>=Vec::new();
+									let mut bruhctemp:Vec<String>=Vec::new();
+									let mut absolutetemp:Vec<types>=Vec::new();
+									let mut absolutectemp:Vec<String>=Vec::new();
+									for huh in 0..attemp.len(){
+										match attemp[huh].clone(){
+											types::innerend=>{
+												if absolutetemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Supposingly you at least put something before ?...Code_block:{}",codeblock);exit(1);}
+												else if inloop==0{
+													bruhtemp.push(absolutetemp.clone();absolutetemp=Vec::new(););
+													bruhctemp.push(absolutectemp.clone();absolutectemp=Vec::new(););
+												}else{absolutetemp.push(attemp[huh].clone());absolutectemp.push(actemp[huh].clone());}
+												},
+											types::scurly=>{inloop+=1;continue;},
+											types::ecurly=>{inloop-=1;continue;},
+											types::separater=>{},
+											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
+										}
+									}
+									atemp=parser_third((bruhtemp,bruhctemp));
+									final.push(action::modset{modname:fahbruh,attributes:atemp.clone(),inneraction:Vec::new()});
+								}
+							}
+						},
+						_=>{codeblock.push(i);eprint!("Syntax Error:Supposingly you should use variable type to call functions...Code_block:{}",codeblock);exit(1);}
+					}
+				}//modset{modname:String,attributes:Vec<action>,inneraction:Vec<action>}
+				//omg wtf am i even doing,time to rest bruh so tired,today end here bruh
+			}
+						
 struct lekker{
 	codebyblock:Vec<action>,//uhh change it later then
+	funclist:HashMap<Vec<String>,Vec<action>>,//as final i decide still us String
 	global_variable:HashMap<String,variable_type>,
 	temp:Vec<HashMap<String,variable_type>>,
 	local_variable:HashMap<String,variable_type>,
