@@ -193,10 +193,10 @@ fn parser_second(damn:(Vec<Vec<types>>,Vec<Vec<String>>))->(Vec<Vec<types>>,Vec<
 	}
 	final_merged
 }//finally done this... somehow i suppose can done in 30 min but i used 1 hour to write tons of useless comments bruh holly i really suck bruh
-fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->Vec<action>{
+fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)->Vec<action>{
 	//here is probably for uhh flagging error and final merge
 	let (fah1,fah2)=fahhh;
-	let mut code_block=codeblock;
+	let mut codeblock=code_block;
 	let mut ttemp:Vec<types>=Vec::new();
 	let mut ctemp:Vec<String>=Vec::new();
 	let mut ittemp:Vec<types>=Vec::new();
@@ -278,7 +278,8 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 								}
 							}
 							//i not even sure is it ok bruh brain kinda cooked
-							final.push(action::function{fnname:functions::bracket,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp))});
+							codeblock.push(i);	final.push(action::function{fnname:functions::bracket,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp),codeblock)});
+							codeblock.pop().unwrap();
 						}
 						else{//function{fnname:functions,attributes:Vec<action>,inneraction:Vec<action>}
 							final.push(action::function{fnname:functions::bracket,attributes:Vec::new(),inneraction:Vec::new()});
@@ -304,7 +305,9 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 									_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
 								}
 							}
-							temp=parser_third((bruhtemp,bruhctemp));
+							codeblock.push(i);
+							temp=parser_third((bruhtemp,bruhctemp),codeblock);
+							codeblock.pop().unwrap();
 							let mut inloop:i32=0;
 							let mut bruhtemp:Vec<types>=Vec::new();
 							let mut bruhctemp:Vec<String>=Vec::new();
@@ -325,11 +328,13 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 									_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
 								}
 							}
-							atemp=parser_third((bruhtemp,bruhctemp));
+							codeblock.push(i);
+							atemp=parser_third((bruhtemp,bruhctemp),codeblock);
+							codeblock.pop().unwrap();
 								final.push(action::function{fnname:functions::bracket,attributes:atemp.clone(),inneraction:temp.clone()});
 						}
 						else{
-							temp=parser_third((bruhtemp,bruhctemp));
+							temp=parser_third((bruhtemp,bruhctemp),codeblock);
 							let mut inloop:i32=0;
 							let mut bruhtemp:Vec<types>=Vec::new();
 							let mut bruhctemp:Vec<String>=Vec::new();
@@ -350,7 +355,9 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 									_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
 								}
 							}
-							atemp=parser_third((bruhtemp,bruhctemp));
+							codeblock.push(i)
+							atemp=parser_third((bruhtemp,bruhctemp),codeblock);
+							codeblock.pop().unwrap();
 							final.push(action::function{fnname:functions::bracket,attributes:atemp.clone(),inneraction:Vec::new()});
 						}
 					}
@@ -411,10 +418,14 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
 										}
 									}
-										final.push(action::function{fnname:fahbruh,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp))});
+									codeblock.push(i);
+										final.push(action::function{fnname:fahbruh,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp),codeblock)});
+									codeblock.pop().unwrap();
 								}
 								else{
+									codeblock.push(i);
 									final.push(action::function{fnname:fahbruh,attributes:Vec::new(),inneraction:Vec::new()});
+									codeblock.pop().unwrap();
 								}
 							}else{
 								if !ittemp.is_empty(){
@@ -437,7 +448,7 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
 										}
 									}
-									temp=parser_third((bruhtemp,bruhctemp));
+									temp=parser_third((bruhtemp,bruhctemp),codeblock);
 									let mut inloop:i32=0;
 									let mut bruhtemp:Vec<types>=Vec::new();
 									let mut bruhctemp:Vec<String>=Vec::new();
@@ -458,11 +469,13 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
 										}
 									}
-									atemp=parser_third((bruhtemp,bruhctemp));
+									codeblock.push(i);
+									atemp=parser_third((bruhtemp,bruhctemp),codeblock);
+									codeblock.pop().unwrap();
 									final.push(action::function{fnname:fahbruh,attributes:atemp.clone(),inneraction:temp.clone()});
 								}
 								else{
-									temp=parser_third((bruhtemp,bruhctemp));
+									temp=parser_third((bruhtemp,bruhctemp),codeblock);
 									let mut inloop:i32=0;
 									let mut bruhtemp:Vec<types>=Vec::new();
 									let mut bruhctemp:Vec<String>=Vec::new();
@@ -483,7 +496,9 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
 										}
 									}
-									atemp=parser_third((bruhtemp,bruhctemp));
+									codeblock.push(i);
+									atemp=parser_third((bruhtemp,bruhctemp),codeblock);
+									codeblock.pop().unwrap();
 									final.push(action::function{fnname:fahbruh,attributes:atemp.clone(),inneraction:Vec::new()});
 								}
 							}
@@ -516,7 +531,9 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
 										}
 									}
-									let blablabla=parser_third((bruhtemp,bruhctemp));
+									codeblock.push(i);
+									let blablabla=parser_third((bruhtemp,bruhctemp),codeblock);
+									codeblock.pop().unwrap();
 									if blablala.len()>1{
 										codeblock.push(i);eprint!("Syntax Error:Supposingly you shouldnt put multiple stuff inside a assign function...Code_block:{}",codeblock);exit(1);}else{
 										final.push(action::assign{varname:fahctemp[1],value:Box::new(blablabla[0])});
@@ -585,7 +602,9 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
 										}
 									}
-										final.push(action::modset{modname:fahbruh,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp))});
+									codeblock.push(i);
+										final.push(action::modset{modname:fahbruh,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp),codeblock)});
+									codeblock.pop().unwrap();
 								}
 								else{
 									final.push(action::modset{modname:fahbruh,attributes:Vec::new(),inneraction:Vec::new()});
@@ -611,7 +630,9 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
 										}
 									}
-									temp=parser_third((bruhtemp,bruhctemp));
+									codeblock.push(i);
+									temp=parser_third((bruhtemp,bruhctemp),codeblock);
+									codeblock.pop().unwrap();
 									let mut inloop:i32=0;
 									let mut bruhtemp:Vec<types>=Vec::new();
 									let mut bruhctemp:Vec<String>=Vec::new();
@@ -632,11 +653,13 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
 										}
 									}
-									atemp=parser_third((bruhtemp,bruhctemp));
+									codeblock.push(i);
+									atemp=parser_third((bruhtemp,bruhctemp),codeblock);
+									codeblock.pop().unwrap();
 									final.push(action::modset{modname:fahbruh,attributes:atemp.clone(),inneraction:temp.clone()});
 								}
 								else{
-									temp=parser_third((bruhtemp,bruhctemp));
+									temp=parser_third((bruhtemp,bruhctemp),codeblock);
 									let mut inloop:i32=0;
 									let mut bruhtemp:Vec<types>=Vec::new();
 									let mut bruhctemp:Vec<String>=Vec::new();
@@ -657,7 +680,9 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),codeblock:Vec<usize>)->
 											_=>{absolutetemp.push(ittemp[huh].clone());absolutectemp.push(ictemp[huh].clone());},
 										}
 									}
-									atemp=parser_third((bruhtemp,bruhctemp));
+									codeblock.push(i);
+									atemp=parser_third((bruhtemp,bruhctemp),codeblock);
+									codeblock.pop().unwrap();
 									final.push(action::modset{modname:fahbruh,attributes:atemp.clone(),inneraction:Vec::new()});
 								}
 							}
