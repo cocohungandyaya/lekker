@@ -758,7 +758,7 @@ struct lekker{
 	error_log:Vec<String>,
 	local_variables:HashMap<String,variables>,
 	local_temp:Vec<HashMap<String,variables>,
-	code:String,
+	codes:String,
 	linenum:usize,
 	error_flag:bool,
 }
@@ -770,7 +770,8 @@ impl lekker{
 		let mut final:Vec<Vec<String>>=Vec::new()://Only Way sing by 9lana is actually cool
 		let mut fahstring:bool=true;//also means in_string and true is meaning it isnt in the string
 		let mut lpnum:i32=0;
-		let sigma=self.code.clone().split("").collect::<Vec<_>>();
+		let code=self.codes.clone().split("").collect::<Vec<_>>();//fahhh keep calling the wrong variable name holly
+		let sigma=self.codes.clone().split("").collect::<Vec<_>>();
 		let mut iscomment:bool=true;//reverse actually
 		for i in 0..sigma.len(){
 			if lpnum==0{
@@ -848,6 +849,16 @@ impl lekker{
 					}else if "}"==code[i].clone(){
 						lpnum-=1;
 						temp.push_str(code[i].as_str());
+					}else if i==sigma.len()-1{
+						if !list_temp.is_empty(){
+							temp.push_str(code[i].as_str());
+							list_temp.push(temp.clone());
+							final.push(list_temp.clone());
+						}else{
+							final.push(Vec::new());
+						}
+						list_temp=Vec::new();
+						temp=String::new();
 					}else{
 						temp.push_str(code[i].as_str());
 					}
@@ -857,6 +868,7 @@ impl lekker{
 						fahstring=!fahstring;
 					}else if i==sigma.len()-1{
 						if !list_temp.is_empty(){
+							temp.push_str(code[i].as_str());
 							temp.push_str("\"");
 							list_temp.push(temp.clone());
 							final.push(list_temp.clone());
