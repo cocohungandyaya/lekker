@@ -159,7 +159,7 @@ fn parser_second(damn:(Vec<Vec<types>>,Vec<Vec<String>>))->(Vec<Vec<types>>,Vec<
 	let (cdtype,cdtemp)=damn;
 	let mut temp_tlist:Vec<types>=Vec::new();
 	let mut temp_clist:Vec<String>=Vec::new();
-	let mut final_merged:(Vec<Vec<types>>,Vec<Vec<String>>)=(Vec::new(),Vec::new());
+	let mut finale_merged:(Vec<Vec<types>>,Vec<Vec<String>>)=(Vec::new(),Vec::new());
 	for i in 0..cdtype.len(){
 		for j in 0..cdtype[i].len(){
 //fahhh now 13:00 bruh ytd(actually today) sleep at 6am bruh holly kinda tired bruh fahhhhhhhhhhhhhhhhh
@@ -185,16 +185,16 @@ fn parser_second(damn:(Vec<Vec<types>>,Vec<Vec<String>>))->(Vec<Vec<types>>,Vec<
 				}//that is it!?
 				else{temp_tlist.push(cdtype[i][j].clone());temp_clist.push(cdtemp[i][j].clone());}
 			}else{temp_tlist.push(cdtype[i][j].clone());temp_clist.push(cdtemp[i][j].clone());}
-			//err and rese the two temp_tlist i guess and make a final
+			//err and rese the two temp_tlist i guess and make a finale
 		}
-		final_merged.0.push(temp_tlist);final_merged.1.push(temp_clist);
+		finale_merged.0.push(temp_tlist);finale_merged.1.push(temp_clist);
 		temp_tlist=Vec::new();
 		temp_clist=Vec::new();
 	}
-	final_merged
-}//finally done this... somehow i suppose can done in 30 min but i used 1 hour to write tons of useless comments bruh holly i really suck bruh
+	finale_merged
+}//finalely done this... somehow i suppose can done in 30 min but i used 1 hour to write tons of useless comments bruh holly i really suck bruh
 fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)->Vec<action>{
-	//here is probably for uhh flagging error and final merge
+	//here is probably for uhh flagging error and finale merge
 	let (fah1,fah2)=fahhh;
 	let mut codeblock=code_block;
 	let mut ttemp:Vec<types>=Vec::new();
@@ -203,7 +203,7 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 	let mut ictemp:Vec<String>=Vec::new();
 	let mut lpnum:i32=0;
 	let mut been_loop:bool=false;
-	let mut final:Vec<action>=Vec::new();
+	let mut finale:Vec<action>=Vec::new();
 	for i in 0..fah1.len(){
 		been_loop=true;
 		for j in 0..fah1[i].len(){
@@ -221,7 +221,7 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 //err my brain now got filled with 雨愛 (Rainie Love) i just dont get it,like it is a good song,why put it with 咒術迴戰->新宿決戰!? just ruined the song bruh holly
 //i am deciding add back , to uhh print bruh kinda suck might actually can just make a list for that bruh
 //to lower the risk of dumb people why dont make everything into functions like must use !{} sth like that? like even add minus all throw into function huh that way easier for me to check eror isnt it huh so i just change almost everything into a function except still the # and @ and $ bruh
-		//stuck here for an hour finally kinda understand what to do bruh
+		//stuck here for an hour finalely kinda understand what to do bruh
 		if ttemp.is_empty(){codeblock.push(i);eprint!("Syntax Error:Missing sth before bracket example:!print{};...Code_block:{}",codeblock);exit(1);}
 		else{
 			let mut fahtemp:Vec<types>=Vec::new();
@@ -278,11 +278,11 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 								}
 							}
 							//i not even sure is it ok bruh brain kinda cooked
-							codeblock.push(i);	final.push(action::function{fnname:functions::bracket,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp),codeblock)});
+							codeblock.push(i);	finale.push(action::function{fnname:functions::bracket,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp),codeblock)});
 							codeblock.pop().unwrap();
 						}
 						else{//function{fnname:functions,attributes:Vec<action>,inneraction:Vec<action>}
-							final.push(action::function{fnname:functions::bracket,attributes:Vec::new(),inneraction:Vec::new()});
+							finale.push(action::function{fnname:functions::bracket,attributes:Vec::new(),inneraction:Vec::new()});
 						}
 					}else{
 						if !ittemp.is_empty(){
@@ -331,7 +331,7 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 							codeblock.push(i);
 							atemp=parser_third((bruhtemp,bruhctemp),codeblock);
 							codeblock.pop().unwrap();
-								final.push(action::function{fnname:functions::bracket,attributes:atemp.clone(),inneraction:temp.clone()});
+								finale.push(action::function{fnname:functions::bracket,attributes:atemp.clone(),inneraction:temp.clone()});
 						}
 						else{
 							temp=parser_third((bruhtemp,bruhctemp),codeblock);
@@ -358,7 +358,7 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 							codeblock.push(i)
 							atemp=parser_third((bruhtemp,bruhctemp),codeblock);
 							codeblock.pop().unwrap();
-							final.push(action::function{fnname:functions::bracket,attributes:atemp.clone(),inneraction:Vec::new()});
+							finale.push(action::function{fnname:functions::bracket,attributes:atemp.clone(),inneraction:Vec::new()});
 						}
 					}
 				}
@@ -419,12 +419,12 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 										}
 									}
 									codeblock.push(i);
-										final.push(action::function{fnname:fahbruh,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp),codeblock)});
+										finale.push(action::function{fnname:fahbruh,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp),codeblock)});
 									codeblock.pop().unwrap();
 								}
 								else{
 									codeblock.push(i);
-									final.push(action::function{fnname:fahbruh,attributes:Vec::new(),inneraction:Vec::new()});
+									finale.push(action::function{fnname:fahbruh,attributes:Vec::new(),inneraction:Vec::new()});
 									codeblock.pop().unwrap();
 								}
 							}else{
@@ -472,7 +472,7 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 									codeblock.push(i);
 									atemp=parser_third((bruhtemp,bruhctemp),codeblock);
 									codeblock.pop().unwrap();
-									final.push(action::function{fnname:fahbruh,attributes:atemp.clone(),inneraction:temp.clone()});
+									finale.push(action::function{fnname:fahbruh,attributes:atemp.clone(),inneraction:temp.clone()});
 								}
 								else{
 									temp=parser_third((bruhtemp,bruhctemp),codeblock);
@@ -499,7 +499,7 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 									codeblock.push(i);
 									atemp=parser_third((bruhtemp,bruhctemp),codeblock);
 									codeblock.pop().unwrap();
-									final.push(action::function{fnname:fahbruh,attributes:atemp.clone(),inneraction:Vec::new()});
+									finale.push(action::function{fnname:fahbruh,attributes:atemp.clone(),inneraction:Vec::new()});
 								}
 							}
 						},
@@ -536,7 +536,7 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 									codeblock.pop().unwrap();
 									if blablala.len()>1{
 										codeblock.push(i);eprint!("Syntax Error:Supposingly you shouldnt put multiple stuff inside a assign function...Code_block:{}",codeblock);exit(1);}else{
-										final.push(action::assign{varname:fahctemp[1],value:Box::new(blablabla[0])});
+										finale.push(action::assign{varname:fahctemp[1],value:Box::new(blablabla[0])});
 									}
 								}
 								else{
@@ -603,11 +603,11 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 										}
 									}
 									codeblock.push(i);
-										final.push(action::modset{modname:fahbruh,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp),codeblock)});
+										finale.push(action::modset{modname:fahbruh,attributes:Vec::new(),inneraction:parser_third((bruhtemp,bruhctemp),codeblock)});
 									codeblock.pop().unwrap();
 								}
 								else{
-									final.push(action::modset{modname:fahbruh,attributes:Vec::new(),inneraction:Vec::new()});
+									finale.push(action::modset{modname:fahbruh,attributes:Vec::new(),inneraction:Vec::new()});
 								}
 							}else{
 								if !ittemp.is_empty(){
@@ -656,7 +656,7 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 									codeblock.push(i);
 									atemp=parser_third((bruhtemp,bruhctemp),codeblock);
 									codeblock.pop().unwrap();
-									final.push(action::modset{modname:fahbruh,attributes:atemp.clone(),inneraction:temp.clone()});
+									finale.push(action::modset{modname:fahbruh,attributes:atemp.clone(),inneraction:temp.clone()});
 								}
 								else{
 									temp=parser_third((bruhtemp,bruhctemp),codeblock);
@@ -683,7 +683,7 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 									codeblock.push(i);
 									atemp=parser_third((bruhtemp,bruhctemp),codeblock);
 									codeblock.pop().unwrap();
-									final.push(action::modset{modname:fahbruh,attributes:atemp.clone(),inneraction:Vec::new()});
+									finale.push(action::modset{modname:fahbruh,attributes:atemp.clone(),inneraction:Vec::new()});
 								}
 							}
 						},
@@ -695,7 +695,7 @@ fn parser_third(fahhh:(Vec<Vec<types>>,Vec<Vec<String>>),code_block:Vec<usize>)-
 						
 struct lekker{
 	codebyblock:Vec<action>,//uhh change it later then
-	funclist:HashMap<Vec<String>,Vec<action>>,//as final i decide still us String
+	funclist:HashMap<Vec<String>,Vec<action>>,//as finale i decide still us String
 	global_variable:HashMap<String,variable_type>,
 	temp:Vec<HashMap<String,variable_type>>,
 	local_variable:HashMap<String,variable_type>,
@@ -737,7 +737,7 @@ fn main(){
 	then i suppose it wont need traditional lexer and parser lmao much easier and i can even write function one by one
 	i have plan now:
 	1.lekker will auto skip all error lines and try to execute codes that is still normal to use so you need to be syntax perfect and logic perfect but at the same time you dont need afraid of tons of error anymore
-	yeah i finally used my brain,if now rules is make by me why dont make it whatever i want lmao
+	yeah i finalely used my brain,if now rules is make by me why dont make it whatever i want lmao
 */
 //project redefine here and let restrict must use \" as String
 //first write the input and output and variable assigning
@@ -757,132 +757,162 @@ struct lekker{
 	global_variables:HashMap<String,variables>,
 	error_log:Vec<String>,
 	local_variables:HashMap<String,variables>,
-	local_temp:Vec<HashMap<String,variables>,
+	local_temp:Vec<HashMap<String,variables>>,
 	codes:String,
 	linenum:usize,
 	error_flag:bool,
 }
 impl lekker{
-	fn sbyblock(mut &self)->(variabes,usize){
+	fn sbyblock(&mut self)->Vec<Vec<String>>{
 		//make a loop for action oneach line,syntax must all separated by rather \t or " " or else error(skip that line)
 		let mut temp:String=String::new();
 		let mut list_temp:Vec<String>=Vec::new();
-		let mut final:Vec<Vec<String>>=Vec::new()://Only Way sing by 9lana is actually cool
+		let mut finale:Vec<Vec<String>>=Vec::new();//Only Way sing by 9lana is actually cool
 		let mut fahstring:bool=true;//also means in_string and true is meaning it isnt in the string
 		let mut lpnum:i32=0;
-		let code=self.codes.clone().split("").collect::<Vec<_>>();//fahhh keep calling the wrong variable name holly
-		let sigma=self.codes.clone().split("").collect::<Vec<_>>();
+		let binding = self.codes.clone();
+		let bindings = binding.clone();
+		let code=binding.split("").collect::<Vec<_>>();//fahhh keep calling the wrong variable name holly
+		let sigma=binding.split("").collect::<Vec<_>>();
 		let mut iscomment:bool=true;//reverse actually
-		for i in 0..sigma.len(){
-			if lpnum==0{
-				if fahstring{
-					if iscomment{
-						if "\""==code[i].clone(){
-							fahstring=!fahstring;
-						}else if " "==code[i].clone() || "\t"==code[i].clone(){
-							if !temp.is_empty(){
-								list_temp.push(temp.clone());
+		let mut jumper:bool=false;//for jumping if meet \t or \n or \"
+		for i in 0..sigma.len(){//what even is the bug!??????????i am going insane bruh where even is the bug!!!!!!!!!!!!!
+			if !jumper{//tmr rewrite this whole part,cant find that single bug in this 100 line bruh,fucking painful
+				if lpnum==0{//i am tired of this shit
+					if fahstring{
+						if iscomment{
+							if "\""==code[i].clone(){
+								fahstring=!fahstring;
+								
+								temp.push_str("\"");
+								jumper = true;
+							}else if " "==code[i].clone(){
+								if !temp.is_empty(){
+									list_temp.push(temp.clone());
+									temp=String::new();
+								}
+							}else if  "\t"==code[i].clone(){
+								if !temp.is_empty(){
+									list_temp.push(temp.clone());
+									temp=String::new();
+								}
+								jumper=true;
+							}						
+							else if "\n"==code[i].clone(){
+								if !list_temp.is_empty(){
+									finale.push(list_temp.clone());
+								}
+								else{finale.push(Vec::new());}
+								list_temp=Vec::new();
 								temp=String::new();
+								jumper=true;
+							}else if "{"==code[i].clone(){
+								lpnum+=1;//anyone can help me with my chemistry...i really need help on that...
+								temp.push_str(code[i].clone());
 							}
-						}else if "\n"==code[i].clone(){
-							if !list_temp.is_empty(){
-								final.push(list_temp.clone());
+							else if "}"==code[i].clone(){
+								if !list_temp.is_empty(){
+									finale.push(list_temp.clone());
+								}
+								list_temp=Vec::new();
+								temp=String::new();
+								break;
+							}else if "#"==code[i].clone(){
+								iscomment= !iscomment;
+							}else{
+								temp.push_str(code[i].clone());
 							}
-							else{final.push(Vec::new());}
-							list_temp=Vec::new();
-							temp=String::new();
-						}else if "{"==code[i].clone(){
-							lpnum+=1;//anyone can help me with my chemistry...i really need help on that...
-							temp.push_str(code[i].as_str());
-						}
-						else if "}"==code[i].clone(){
-							if !list_temp.is_empty(){
-								final.push(list_temp.clone());
-							}
-							list_temp=Vec::new();
-							temp=String::new();
-							break;
-						}else if "#"==code[i].clone(){
-							iscomment= !iscomment;
 						}else{
-							temp.push_str(code[i].as_str());
+							if "#" == code[i].clone(){
+								iscomment= !iscomment;
+							}else if "\n"==code[i].clone(){
+								if !list_temp.is_empty(){
+									finale.push(list_temp.clone());
+								}
+								else{finale.push(Vec::new());}
+								list_temp=Vec::new();
+								temp=String::new();
+								iscomment= !iscomment;
+								jumper=true;
+							}
 						}
 					}else{
-						if "#" == code[i].clone(){
-							iscomment= !iscomment;
-						}else if "\n"==code[i].clone(){
+						if "\""==code[i].clone(){
+							fahstring=!fahstring;
+							temp.push_str("\"");
+							list_temp.push(temp.clone());
+							jumper = true;
+						}
+						if "\n"==code[i].clone() || i==sigma.len()-1{
 							if !list_temp.is_empty(){
-								final.push(list_temp.clone());
+								if code[i].clone()!="\""{
+									temp.push_str(code[i].clone());
+									temp.push_str("\"");
+									list_temp.push(temp.clone());
+								}
+								finale.push(list_temp.clone());
+							}else{
+								finale.push(Vec::new());
 							}
-							else{final.push(Vec::new());}
 							list_temp=Vec::new();
 							temp=String::new();
-							iscomment= !iscomment;
+							jumper = true;
+						}
+						else{
+							temp.push_str(code[i].clone());
 						}
 					}
 				}else{
-					if "\""==code[i].clone(){
-						fahstring=!fahstring;
-					}else if "\n"==code[i].clone() || i==sigma.len()-1{
-						if !list_temp.is_empty(){
+					if fahstring{//holly this week suck tmr english test and the day after is fucking chinese test
+						//9lana absolute cinema!(imagine here have a sticker bruh)
+						if "\""==code[i].clone(){
+							fahstring=!fahstring;
 							temp.push_str("\"");
-							list_temp.push(temp.clone());
-							final.push(list_temp.clone());
+							jumper = true;
+						}else if "{"==code[i].clone(){
+							lpnum+=1;
+							temp.push_str(code[i].clone());
+						}else if "}"==code[i].clone(){
+							lpnum-=1;
+							temp.push_str(code[i].clone());
+						}else if i==sigma.len()-1{
+							if !list_temp.is_empty(){
+								temp.push_str(code[i].clone());
+								list_temp.push(temp.clone());
+								finale.push(list_temp.clone());
+							}else{
+								finale.push(Vec::new());
+							}
+							list_temp=Vec::new();
+							temp=String::new();
 						}else{
-							final.push(Vec::new());
+							temp.push_str(code[i].clone());
 						}
-						list_temp=Vec::new();
-						temp=String::new();
-					}
-					else{
-						temp.push_str(code[i].as_str());
+					}else{//いますぐ輪廻!
+						//golden brown also actually absolute cinema cuz that is my favourite
+						if "\""==code[i].clone(){
+							fahstring=!fahstring;
+							temp.push_str("\"");
+							jumper = true;
+						}else if i==sigma.len()-1{
+							if !list_temp.is_empty(){
+								temp.push_str(code[i].clone());
+								temp.push_str("\"");
+								list_temp.push(temp.clone());
+								finale.push(list_temp.clone());
+							}else{
+								finale.push(Vec::new());
+							}
+							list_temp=Vec::new();
+							temp=String::new();
+						}else{
+							temp.push_str(code[i].clone());
+						}//actually just doing copy and paste bruh
 					}
 				}
-			}else{
-				if fahstring{//holly this week suck tmr english test and the day after is fucking chinese test
-					//9lana absolute cinema!(imagine here have a sticker bruh)
-					if "\""==code[i].clone(){
-						fahstring=!fahstring;
-					}else if "{"==code[i].clone(){
-						lpnum+=1;
-						temp.push_str(code[i].as_str());
-					}else if "}"==code[i].clone(){
-						lpnum-=1;
-						temp.push_str(code[i].as_str());
-					}else if i==sigma.len()-1{
-						if !list_temp.is_empty(){
-							temp.push_str(code[i].as_str());
-							list_temp.push(temp.clone());
-							final.push(list_temp.clone());
-						}else{
-							final.push(Vec::new());
-						}
-						list_temp=Vec::new();
-						temp=String::new();
-					}else{
-						temp.push_str(code[i].as_str());
-					}
-				}else{//いますぐ輪廻!
-					//golden brown also actually absolute cinema cuz that is my favourite
-					if "\""==code[i].clone(){
-						fahstring=!fahstring;
-					}else if i==sigma.len()-1{
-						if !list_temp.is_empty(){
-							temp.push_str(code[i].as_str());
-							temp.push_str("\"");
-							list_temp.push(temp.clone());
-							final.push(list_temp.clone());
-						}else{
-							final.push(Vec::new());
-						}
-						list_temp=Vec::new();
-						temp=String::new();
-					}else{
-						temp.push_str(code[i].as_str());
-					}//actually just doing copy and paste bruh
-				}
-			}
-		}//tmr start from here,today job done,tmr start write the execution part bruh
+			}else{jumper=false;}
+		}
+		finale
 	}
 }//actually i can wrap it inside itself when encounter loop bruh
 
@@ -893,7 +923,24 @@ fn main(){
 		eprint!("Error:Arguments too much or not enough,suppose should be ./lekker [your file] || lekker.exe [your file]");
 		exit(1)
 	}else{
+	/*global_variables:HashMap<String,variables>,
+	error_log:Vec<String>,
+	local_variables:HashMap<String,variables>,
+	local_temp:Vec<HashMap<String,variables>>,
+	codes:String,
+	linenum:usize,
+	error_flag:bool,
+	*/
 		let content:String=fs::read_to_string(path[1].clone()).unwrap().to_string();
-		
+		let mut smain=lekker{
+			global_variables:HashMap::new(),
+			error_log:Vec::new(),
+			local_variables:HashMap::new(),
+			local_temp:Vec::new(),
+			codes:content.clone(),
+			linenum:0,
+			error_flag:false,
+		};
+		print!("raw separated:{:?}",smain.sbyblock());
 	}	
 }
