@@ -1,4 +1,4 @@
-//lekker is a high-level programming language(percise as interpreter)with low-level syntax,build based on rust without any external crate(before it can bootstrap itself)
+/*//lekker is a high-level programming language(percise as interpreter)with low-level syntax,build based on rust without any external crate(before it can bootstrap itself)
 /*expect syntax(current version):
 	#x{12.9*31}; //# for setting the value(all will be mutable) of name between # and < inside <> and end with;
 	!print{"12.9*31="x}; //function between ! and < are decide for what to do <> and abandoning the , also can do @x if need call gobal value(set outside loop)
@@ -716,5 +716,172 @@ fn main(){
 		println!("\nfirst init prarsed:{:?}\n\nraw init parsed:{:?}",c,d);
 		let  (e,f)=parser_second((c,d));
 		println!("\nfirst second prarsed:{:?}\n\nraw second parsed:{:?}",e,f);
+	}	
+}
+*/
+//upper is old code,gonna rewrite everything here,i have think for this quite a long time...i kinda suck so rewrite it then
+//well why think such that much isnt it,just write sth out is fine bruh and then immediately go start my new project then
+/* i have think for quite a long time like why not...make it chaotic?
+	print x # it is now in a stage of holding?
+	let x be y 
+	let y be "sigma" #like print it out here because now it is defined?
+	//or like...
+	print let x be loop{
+		fahhh+=1
+		let fahhh be x
+		let x be 3
+		if fahhh == 3 {return}{fahhh+1}
+	}
+	//urr upper one just dont bruh kindasuckbruh
+	oh yeah i got idea,why not like lekker first see what can assign and if syntax error just skip that line bruh like if need see error then on first line say:give me error
+	then i suppose it wont need traditional lexer and parser lmao much easier and i can even write function one by one
+	i have plan now:
+	1.lekker will auto skip all error lines and try to execute codes that is still normal to use so you need to be syntax perfect and logic perfect but at the same time you dont need afraid of tons of error anymore
+	yeah i finally used my brain,if now rules is make by me why dont make it whatever i want lmao
+*/
+//project redefine here and let restrict must use \" as String
+//first write the input and output and variable assigning
+//1.output 2.variable assigning 3. input
+use std::collections::HashMap;
+use std::env;
+use std::fs;
+use std::process::exit;
+enum variables{
+	string(String),
+	numbers(f64),
+	bl(bool),
+	list(Vec<variables>),
+	Null,
+}
+struct lekker{
+	global_variables:HashMap<String,variables>,
+	error_log:Vec<String>,
+	local_variables:HashMap<String,variables>,
+	local_temp:Vec<HashMap<String,variables>,
+	code:String,
+	linenum:usize,
+	error_flag:bool,
+}
+impl lekker{
+	fn sbyblock(mut &self)->(variabes,usize){
+		//make a loop for action oneach line,syntax must all separated by rather \t or " " or else error(skip that line)
+		let mut temp:String=String::new();
+		let mut list_temp:Vec<String>=Vec::new();
+		let mut final:Vec<Vec<String>>=Vec::new()://Only Way sing by 9lana is actually cool
+		let mut fahstring:bool=true;//also means in_string and true is meaning it isnt in the string
+		let mut lpnum:i32=0;
+		let sigma=self.code.clone().split("").collect::<Vec<_>>();
+		let mut iscomment:bool=true;//reverse actually
+		for i in 0..sigma.len(){
+			if lpnum==0{
+				if fahstring{
+					if iscomment{
+						if "\""==code[i].clone(){
+							fahstring=!fahstring;
+						}else if " "==code[i].clone() || "\t"==code[i].clone(){
+							if !temp.is_empty(){
+								list_temp.push(temp.clone());
+								temp=String::new();
+							}
+						}else if "\n"==code[i].clone(){
+							if !list_temp.is_empty(){
+								final.push(list_temp.clone());
+							}
+							else{final.push(Vec::new());}
+							list_temp=Vec::new();
+							temp=String::new();
+						}else if "{"==code[i].clone(){
+							lpnum+=1;//anyone can help me with my chemistry...i really need help on that...
+							temp.push_str(code[i].as_str());
+						}
+						else if "}"==code[i].clone(){
+							if !list_temp.is_empty(){
+								final.push(list_temp.clone());
+							}
+							list_temp=Vec::new();
+							temp=String::new();
+							break;
+						}else if "#"==code[i].clone(){
+							iscomment= !iscomment;
+						}else{
+							temp.push_str(code[i].as_str());
+						}
+					}else{
+						if "#" == code[i].clone(){
+							iscomment= !iscomment;
+						}else if "\n"==code[i].clone(){
+							if !list_temp.is_empty(){
+								final.push(list_temp.clone());
+							}
+							else{final.push(Vec::new());}
+							list_temp=Vec::new();
+							temp=String::new();
+							iscomment= !iscomment;
+						}
+					}
+				}else{
+					if "\""==code[i].clone(){
+						fahstring=!fahstring;
+					}else if "\n"==code[i].clone() || i==sigma.len()-1{
+						if !list_temp.is_empty(){
+							temp.push_str("\"");
+							list_temp.push(temp.clone());
+							final.push(list_temp.clone());
+						}else{
+							final.push(Vec::new());
+						}
+						list_temp=Vec::new();
+						temp=String::new();
+					}
+					else{
+						temp.push_str(code[i].as_str());
+					}
+				}
+			}else{
+				if fahstring{//holly this week suck tmr english test and the day after is fucking chinese test
+					//9lana absolute cinema!(imagine here have a sticker bruh)
+					if "\""==code[i].clone(){
+						fahstring=!fahstring;
+					}else if "{"==code[i].clone(){
+						lpnum+=1;
+						temp.push_str(code[i].as_str());
+					}else if "}"==code[i].clone(){
+						lpnum-=1;
+						temp.push_str(code[i].as_str());
+					}else{
+						temp.push_str(code[i].as_str());
+					}
+				}else{//いますぐ輪廻!
+					//golden brown also actually absolute cinema cuz that is my favourite
+					if "\""==code[i].clone(){
+						fahstring=!fahstring;
+					}else if i==sigma.len()-1{
+						if !list_temp.is_empty(){
+							temp.push_str("\"");
+							list_temp.push(temp.clone());
+							final.push(list_temp.clone());
+						}else{
+							final.push(Vec::new());
+						}
+						list_temp=Vec::new();
+						temp=String::new();
+					}else{
+						temp.push_str(code[i].as_str());
+					}//actually just doing copy and paste bruh
+				}
+			}
+		}//tmr start from here,today job done,tmr start write the execution part bruh
+	}
+}//actually i can wrap it inside itself when encounter loop bruh
+
+	
+fn main(){
+	let path:Vec<_>=env::args().collect();
+	if path.len()!=2{
+		eprint!("Error:Arguments too much or not enough,suppose should be ./lekker [your file] || lekker.exe [your file]");
+		exit(1)
+	}else{
+		let content:String=fs::read_to_string(path[1].clone()).unwrap().to_string();
+		
 	}	
 }
