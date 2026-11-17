@@ -8,6 +8,6 @@
 
 16 Nov 2026:i done the parser third(also call error flagging and final merge) with 500+line of code and i might need rewrite everything holly
 
-17 Nov 2026:i currently rewriting everything with different goal and syntax
+17 Nov 2026:i done the first looping separating codeblock by line part
 ## Features lekker will have:
 1. Error free running environment,if it encounter a error it will skip that line and keep running codes that didnt have error,so you need to be syntax perfect and logic perfect
