@@ -1,9 +1,13 @@
+
+
 print "Hello World!"
 loop {
 	let x be input
 	loop {
 		print "x:",x
+		break
 	}
+	break
 }
 let y be 3
 print x,y
