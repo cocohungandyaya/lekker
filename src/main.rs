@@ -758,161 +758,63 @@ struct lekker{
 	error_log:Vec<String>,
 	local_variables:HashMap<String,variables>,
 	local_temp:Vec<HashMap<String,variables>>,
-	codes:String,
+	code:String,
 	linenum:usize,
 	error_flag:bool,
 }
 impl lekker{
-	fn sbyblock(&mut self)->Vec<Vec<String>>{
-		//make a loop for action oneach line,syntax must all separated by rather \t or " " or else error(skip that line)
+	fn sbyblock(&self)->Vec<String>{//still maybe just lower the level to split by blocks as first init split
 		let mut temp:String=String::new();
-		let mut list_temp:Vec<String>=Vec::new();
-		let mut finale:Vec<Vec<String>>=Vec::new();//Only Way sing by 9lana is actually cool
-		let mut fahstring:bool=true;//also means in_string and true is meaning it isnt in the string
-		let mut lpnum:i32=0;
-		let binding = self.codes.clone();
-		let bindings = binding.clone();
-		let code=binding.split("").collect::<Vec<_>>();//fahhh keep calling the wrong variable name holly
-		let sigma=binding.split("").collect::<Vec<_>>();
-		let mut iscomment:bool=true;//reverse actually
-		let mut jumper:bool=false;//for jumping if meet \t or \n or \"
-		for i in 0..sigma.len(){//what even is the bug!??????????i am going insane bruh where even is the bug!!!!!!!!!!!!!
-			if !jumper{//tmr rewrite this whole part,cant find that single bug in this 100 line bruh,fucking painful
-				if lpnum==0{//i am tired of this shit
-					if fahstring{
-						if iscomment{
-							if "\""==code[i].clone(){
-								fahstring=!fahstring;
-								
-								temp.push_str("\"");
-								jumper = true;
-							}else if " "==code[i].clone(){
-								if !temp.is_empty(){
-									list_temp.push(temp.clone());
-									temp=String::new();
-								}
-							}else if  "\t"==code[i].clone(){
-								if !temp.is_empty(){
-									list_temp.push(temp.clone());
-									temp=String::new();
-								}
-								jumper=true;
-							}						
-							else if "\n"==code[i].clone(){
-								if !list_temp.is_empty(){
-									finale.push(list_temp.clone());
-								}
-								else{finale.push(Vec::new());}
-								list_temp=Vec::new();
-								temp=String::new();
-								jumper=true;
-							}else if "{"==code[i].clone(){
-								lpnum+=1;//anyone can help me with my chemistry...i really need help on that...
-								temp.push_str(code[i].clone());
-							}
-							else if "}"==code[i].clone(){
-								if !list_temp.is_empty(){
-									finale.push(list_temp.clone());
-								}
-								list_temp=Vec::new();
-								temp=String::new();
-								break;
-							}else if "#"==code[i].clone(){
-								iscomment= !iscomment;
-							}else{
-								temp.push_str(code[i].clone());
-							}
-						}else{
-							if "#" == code[i].clone(){
-								iscomment= !iscomment;
-							}else if "\n"==code[i].clone(){
-								if !list_temp.is_empty(){
-									finale.push(list_temp.clone());
-								}
-								else{finale.push(Vec::new());}
-								list_temp=Vec::new();
-								temp=String::new();
-								iscomment= !iscomment;
-								jumper=true;
-							}
-						}
-					}else{
-						if "\""==code[i].clone(){
-							fahstring=!fahstring;
-							temp.push_str("\"");
-							list_temp.push(temp.clone());
-							jumper = true;
-						}
-						if "\n"==code[i].clone() || i==sigma.len()-1{
-							if !list_temp.is_empty(){
-								if code[i].clone()!="\""{
-									temp.push_str(code[i].clone());
-									temp.push_str("\"");
-									list_temp.push(temp.clone());
-								}
-								finale.push(list_temp.clone());
-							}else{
-								finale.push(Vec::new());
-							}
-							list_temp=Vec::new();
-							temp=String::new();
-							jumper = true;
-						}
-						else{
-							temp.push_str(code[i].clone());
-						}
-					}
-				}else{
-					if fahstring{//holly this week suck tmr english test and the day after is fucking chinese test
-						//9lana absolute cinema!(imagine here have a sticker bruh)
-						if "\""==code[i].clone(){
-							fahstring=!fahstring;
-							temp.push_str("\"");
-							jumper = true;
-						}else if "{"==code[i].clone(){
-							lpnum+=1;
-							temp.push_str(code[i].clone());
-						}else if "}"==code[i].clone(){
-							lpnum-=1;
-							temp.push_str(code[i].clone());
-						}else if i==sigma.len()-1{
-							if !list_temp.is_empty(){
-								temp.push_str(code[i].clone());
-								list_temp.push(temp.clone());
-								finale.push(list_temp.clone());
-							}else{
-								finale.push(Vec::new());
-							}
-							list_temp=Vec::new();
-							temp=String::new();
-						}else{
-							temp.push_str(code[i].clone());
-						}
-					}else{//いますぐ輪廻!
-						//golden brown also actually absolute cinema cuz that is my favourite
-						if "\""==code[i].clone(){
-							fahstring=!fahstring;
-							temp.push_str("\"");
-							jumper = true;
-						}else if i==sigma.len()-1{
-							if !list_temp.is_empty(){
-								temp.push_str(code[i].clone());
-								temp.push_str("\"");
-								list_temp.push(temp.clone());
-								finale.push(list_temp.clone());
-							}else{
-								finale.push(Vec::new());
-							}
-							list_temp=Vec::new();
-							temp=String::new();
-						}else{
-							temp.push_str(code[i].clone());
-						}//actually just doing copy and paste bruh
-					}
+		let mut temp_list:Vec<String>=Vec::new();
+		//i think my chinese need retest bruh holly
+		let codes=self.code.clone();
+		let codes=codes.clone();
+		let codes=codes.split("").collect::<Vec<_>>();
+		let mut wnum:i32=0;
+		let mut instr:bool=false;
+		for i in 0..codes.len(){
+			let value=codes[i];
+			if wnum>0{
+				match value{
+					"{"=>{if !instr{wnum+=1;}},
+					"}"=>{if !instr{wnum-=1;}},
+					"\""=>{instr= !instr;},
+					_=>{},
 				}
-			}else{jumper=false;}
+				temp.push_str(value);
+				if i+1<codes.len(){continue}
+				else{temp_list.push(temp.clone());break}
+			}else if wnum<0{
+				temp_list.push(temp.clone());
+				break
+			}else{
+				
+				match value{
+					"{"=>{if !instr{wnum+=1;}},
+					"}"=>{if !instr{wnum-=1;}},
+					"\""=>{instr= !instr;},
+					_=>{},
+				}
+				temp.push_str(value);
+				match value{
+					"\n"=>{temp_list.push(temp.clone());temp=String::new();},
+					_=>{},
+				}
+				if i+1<codes.len(){continue}
+				else{temp_list.push(temp.clone());break}
+			}
 		}
-		finale
+		temp_list
+	}//done the first spliting
+	fn sbyspace(&self,bruh:String)->Vec<String>{//now second step to split by space
+		//well now i am start thinking like if you meet {blablabla} and how?
+		//chinese test really cooked
+		//so then just make this become a small func instead of a big func then bruh
+		let codes=bruh.clone();
+		let codes=codes.clone();//make it long lasting
+		let codes=codes.split("").collect::<Vec<_>>();
+		//uhh then? fine write this tmr then i need to do hw bruh
+		Vec::new()				
 	}
 }//actually i can wrap it inside itself when encounter loop bruh
 
@@ -937,10 +839,10 @@ fn main(){
 			error_log:Vec::new(),
 			local_variables:HashMap::new(),
 			local_temp:Vec::new(),
-			codes:content.clone(),
+			code:content.clone(),
 			linenum:0,
 			error_flag:false,
 		};
-		print!("raw separated:{:?}",smain.sbyblock());
+		print!("init split:{:?}",smain.sbyblock());
 	}	
 }
