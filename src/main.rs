@@ -867,7 +867,7 @@ impl lekker{
 			}
 		}
 		temp_list				
-	}
+	}//done lmao next step is to do the separate by comma for list and print use
 }//actually i can wrap it inside itself when encounter loop bruh
 
 	
