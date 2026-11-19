@@ -754,6 +754,7 @@ enum variables{
 	Null,
 }
 struct lekker{
+	functions:HashMap<String,String>,//here for using set to make function which call the sub-program PS:for future usage
 	global_variables:HashMap<String,variables>,
 	error_log:Vec<String>,
 	local_variables:HashMap<String,variables>,
@@ -835,10 +836,11 @@ impl lekker{
 				}
 				match value{
 					"}"=>{if wnum>0&& !is_comment{temp.push_str(value);}},
+					"#"=>{},
 					_=>{if !is_comment{temp.push_str(value);}},
 				}
 				if i+1<codes.len(){continue}
-				else{if !is_comment{temp_list.push(temp.clone());}break}
+				else{temp_list.push(temp.clone());break}
 			}else if wnum<0{
 				temp_list.push(temp.clone());
 				break
@@ -853,17 +855,18 @@ impl lekker{
 				match value{
 					"\n"=>{},
 					"{"=>{},
+					"#"=>{},
 					" "=>{
 						if !temp.is_empty()&& !(instr||is_comment){
 							temp_list.push(temp.clone());
 							temp=String::new();
 						}
-						else{temp.push_str(value);}
+						else{if !is_comment{temp.push_str(value);}}
 					},
-					_=>{temp.push_str(value);},
+					_=>{if !is_comment{temp.push_str(value);}},
 				}
 				if i+1<codes.len(){continue}
-				else{if !is_comment{temp_list.push(temp.clone());}break}
+				else{temp_list.push(temp.clone());break}
 			}
 		}
 		temp_list				
@@ -877,7 +880,9 @@ fn main(){
 		eprint!("Error:Arguments too much or not enough,suppose should be ./lekker [your file] || lekker.exe [your file]");
 		exit(1)
 	}else{
-	/*global_variables:HashMap<String,variables>,
+	/*
+	functions:HashMap<String,String>,
+	global_variables:HashMap<String,variables>,
 	error_log:Vec<String>,
 	local_variables:HashMap<String,variables>,
 	local_temp:Vec<HashMap<String,variables>>,
@@ -887,6 +892,7 @@ fn main(){
 	*/
 		let content:String=fs::read_to_string(path[1].clone()).unwrap().to_string();
 		let mut smain=lekker{
+			functions:HashMap::new(),
 			global_variables:HashMap::new(),
 			error_log:Vec::new(),
 			local_variables:HashMap::new(),
