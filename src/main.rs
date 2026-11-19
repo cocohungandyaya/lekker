@@ -772,13 +772,15 @@ impl lekker{
 		let codes=codes.split("").collect::<Vec<_>>();
 		let mut wnum:i32=0;
 		let mut instr:bool=false;
+		let mut is_comment:bool=false;
 		for i in 0..codes.len(){
 			let value=codes[i];
 			if wnum>0{
 				match value{
-					"{"=>{if !instr{wnum+=1;}},
-					"}"=>{if !instr{wnum-=1;}},
+					"{"=>{if !(instr||is_comment){wnum+=1;}},
+					"}"=>{if !(instr||is_comment){wnum-=1;}},
 					"\""=>{instr= !instr;},
+					"#"=>{is_comment= !is_comment;},
 					_=>{},
 				}
 				temp.push_str(value);
@@ -790,9 +792,10 @@ impl lekker{
 			}else{
 				
 				match value{
-					"{"=>{if !instr{wnum+=1;}},
-					"}"=>{if !instr{wnum-=1;}},
+					"{"=>{if !(instr||is_comment){wnum+=1;}},
+					"}"=>{if !(instr||is_comment){wnum-=1;}},
 					"\""=>{instr= !instr;},
+					"#"=>{is_comment= !is_comment;},
 					_=>{},
 				}
 				temp.push_str(value);
@@ -814,7 +817,56 @@ impl lekker{
 		let codes=codes.clone();//make it long lasting
 		let codes=codes.split("").collect::<Vec<_>>();
 		//uhh then? fine write this tmr then i need to do hw bruh
-		Vec::new()				
+		//i still want write code instead of doing hw bruh
+		let mut temp:String=String::new();
+		let mut temp_list:Vec<String>=Vec::new();
+		let mut is_comment:bool=false;
+		let mut instr:bool=false;
+		let mut wnum:i32=0;
+		for i in 0..codes.len(){
+			let value=codes[i];
+			if wnum>0{
+				match value{
+					"{"=>{if !(instr||is_comment){wnum+=1;}},
+					"}"=>{if !(instr||is_comment){wnum-=1;}},
+					"\""=>{instr= !instr;},
+					"#"=>{is_comment= !is_comment;},
+					_=>{},
+				}
+				match value{
+					"}"=>{if wnum>0&& !is_comment{temp.push_str(value);}},
+					_=>{if !is_comment{temp.push_str(value);}},
+				}
+				if i+1<codes.len(){continue}
+				else{if !is_comment{temp_list.push(temp.clone());}break}
+			}else if wnum<0{
+				temp_list.push(temp.clone());
+				break
+			}else{
+				match value{
+					"{"=>{if !(instr||is_comment){wnum+=1;}},
+					"}"=>{if !(instr||is_comment){wnum-=1;}},
+					"\""=>{instr= !instr;},
+					"#"=>{is_comment= !is_comment;},
+					_=>{},
+				}
+				match value{
+					"\n"=>{},
+					"{"=>{},
+					" "=>{
+						if !temp.is_empty()&& !(instr||is_comment){
+							temp_list.push(temp.clone());
+							temp=String::new();
+						}
+						else{temp.push_str(value);}
+					},
+					_=>{temp.push_str(value);},
+				}
+				if i+1<codes.len(){continue}
+				else{if !is_comment{temp_list.push(temp.clone());}break}
+			}
+		}
+		temp_list				
 	}
 }//actually i can wrap it inside itself when encounter loop bruh
 
@@ -829,7 +881,7 @@ fn main(){
 	error_log:Vec<String>,
 	local_variables:HashMap<String,variables>,
 	local_temp:Vec<HashMap<String,variables>>,
-	codes:String,
+	code:String,
 	linenum:usize,
 	error_flag:bool,
 	*/
@@ -843,6 +895,10 @@ fn main(){
 			linenum:0,
 			error_flag:false,
 		};
-		print!("init split:{:?}",smain.sbyblock());
+		let tester=smain.sbyblock();
+		println!("init split:{:?}\n",tester.clone());
+		for i in tester.clone(){
+			println!("second split:{:?}",smain.sbyspace(i));
+		}
 	}	
 }
