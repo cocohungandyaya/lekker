@@ -167,6 +167,12 @@ impl lekker{
 					_=>{},
 				}//here can refer to sbyblock for idea
 				if lbnum>0{temp.push_str(value);}
+				else{
+					match value{
+						"]"=>{if !instr&&!temp.is_empty(){temp.push_str(value);temp_list.push(temp.clone());break}},
+						_=>{},
+					}
+				}
 				if i+1<printer.len(){continue}
 				else{temp_list.push(temp.clone());break}
 			}else if lbnum<0{//dont overthinking
@@ -174,7 +180,7 @@ impl lekker{
 				break
 			}else{
 				match value{
-					"["=>{if !instr{lbnum+=1;}},
+					"["=>{if !instr{lbnum+=1;temp.push_str(value);}},
 					"]"=>{if !instr{break}},
 					"\""=>{instr= !instr;},
 					","=>{
