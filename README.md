@@ -15,4 +15,4 @@
 20 Nov 2026:uhh english and chinese test both fail holly,so i done the lsbycomma which targetting on splitting variables inside list,also move old code to a new file
 ## Features lekker will have:
 1. Error free running environment,if it encounter a error it will skip that line and keep running codes that didnt have error,so you need to be syntax perfect and logic perfect
-2.you can use comments everywhere
+2. you can use comments everywhere(even inside string)
