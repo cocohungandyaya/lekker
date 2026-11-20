@@ -170,7 +170,7 @@ impl lekker{
 				if lbnum>0{temp.push_str(value);}
 				else{
 					match value{
-						"]"=>{if !instr&&!temp.is_empty(){temp.push_str(value);temp_list.push(temp.clone());break}},
+						"]"=>{if !instr{temp.push_str(value);}},
 						_=>{},
 					}
 				}
@@ -183,7 +183,7 @@ impl lekker{
 				match value{
 					"["=>{if !instr{lbnum+=1;temp.push_str(value);}},
 					"]"=>{if !instr{break}},
-					"\""=>{instr= !instr;},
+					"\""=>{instr= !instr;temp.push_str(value);},
 					","=>{
 						if !instr&&!temp.is_empty(){
 							temp_list.push(temp.clone());
@@ -210,8 +210,26 @@ impl lekker{
 		}
 		temp
 	}//uhh useless small function
+	fn type_check(&self,checker:String)->String{//return:str,num,bool,list,varname
+		let temp=checker.clone();
+		let temp_l=temp.split("").collect::<Vec<_>>();
+		let mut rtvar:String=String::new();//return value
+		if !temp_l.is_empty(){
+			let first=temp_l[1];//if [0] will be "" cuz split with "" lmao
+			//println!("first:{}",first);//disable state of comment if need check bug
+			match first{
+				"["=>{rtvar="list".to_string();},
+				"\""=>{rtvar="str".to_string();},
+				_=>{
+					if temp.clone()=="True" || temp.clone()=="False"{rtvar="bool".to_string();}
+					else{rtvar="varname".to_string();}
+				},
+			}
+		}
+		rtvar
+	}
 	fn print(&self,printable:Vec<String>){
-		//here call lsbycomma and write function to like check if it is a string ,number or a bool or variable name and if variable name then pass to get_value
+		//here call lsbycomma and call type_check if variable name then pass to get_value
 	}
 }//actually i can wrap it inside itself when encounter loop bruh
 
@@ -238,6 +256,10 @@ fn main(){
 		for i in tester.clone(){
 			println!("second split:{:?}",smain.sbyspace(i));
 		}
-		println!("comma split:{:?}",smain.lsbycomma(smain.sbyspace(tester[0].clone())[1].clone()));
+		let ttemp:Vec<String>=smain.lsbycomma(smain.sbyspace(tester[0].clone())[1].clone());
+		println!("comma split:{:?}",ttemp);
+		for i in ttemp{
+			println!("type:{}",smain.type_check(i.clone()));
+		}
 	}	
 }
