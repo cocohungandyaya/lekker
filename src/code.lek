@@ -1,14 +1,13 @@
-
-
+print "Hello#seems comments also works inside string huh# ","World!",[3.14,"fah[asdfasf,adfadf]",[2121212,123123123]]
 print #hi here is a comment#"Hello World!"
 loop {
 	let x#hi here is a comment# be input
 	loop {
-		print "x:",x
+		print "x:",x[1,2]
 		break#you can add comment wherever you want#
 	}
 	bre#even middle of a function name!#ak
 }
-let y be 3
-print x,y
+let y be [3,45,"string here",x]
+print x,y[1,2]
 #yeah so you really can add comment wherever you want cuz the sbyspace will ignore the comment but remember to close the line though#
