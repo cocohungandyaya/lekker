@@ -12,7 +12,7 @@
 
 19 Nov 2026:rewrite code and split the sbyblock() function into two function which is sbyblock() and sbyspace() and only sbyblock() is complete currently,sbyspace() ~i do it tmr~ done it today because i dont want to do hw
 
-20 Nov 2026:uhh english and chinese test both fail holly,so i done the lsbycomma which targetting on splitting variables inside list,also move old code to a new file,also i done write the fn get_value and define the directio for fn print
+20 Nov 2026:uhh english and chinese test both fail holly,so i done the lsbycomma which targetting on splitting variables inside list,also move old code to a new file,also i done write the fn get_value and define the directio for fn print,then i also done the fn type_check
 ## Features lekker will have:
 1. Error free running environment,if it encounter a error it will skip that line and keep running codes that didnt have error,so you need to be syntax perfect and logic perfect
 2. you can use comments everywhere(even inside string)
