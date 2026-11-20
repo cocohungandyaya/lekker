@@ -749,19 +749,14 @@ use std::process::exit;
 enum variables{
 	string(String),
 	numbers(f64),
-	bl(bool),
+	bl(bool),//True and False to represent then
 	list(Vec<variables>),
 	Null,
 }
 struct lekker{
 	functions:HashMap<String,String>,//here for using set to make function which call the sub-program PS:for future usage
-	global_variables:HashMap<String,variables>,
-	error_log:Vec<String>,
-	local_variables:HashMap<String,variables>,
-	local_temp:Vec<HashMap<String,variables>>,
+	variables:HashMap<String,variables>,
 	code:String,
-	linenum:usize,
-	error_flag:bool,
 }
 impl lekker{
 	fn sbyblock(&self)->Vec<String>{//still maybe just lower the level to split by blocks as first init split
@@ -871,6 +866,59 @@ impl lekker{
 		}
 		temp_list				
 	}//done lmao next step is to do the separate by comma for list and print use
+	fn exec(&self){//uhh write this after the comma separation
+		//after a little bit of considering  i might just embed it to different which is assign and print then
+		//call the print function to perform printing(first function)
+	}
+	fn lsbycomma(&self,printwhat:String)->Vec<String>{//varname still printwhat but actually function normally,ignore the variable name
+		let printer:String=printwhat.clone();
+		let printer=printer.clone();
+		let printer=printer.split("").collect::<Vec<_>>();
+		let mut temp:String=String::new();
+		let mut temp_list:Vec<String>=Vec::new();
+		let mut instr:bool=false;
+		let mut lbnum:i32=0;
+		for i in 0..printer.len(){
+			let value=printer[i];
+			if lbnum>0{
+				match value{//here we can ignore if have like {} sth like that cuz get_value will deal with it
+					"["=>{if !instr{lbnum+=1;}},
+					"]"=>{if !instr{lbnum-=1;}},
+					"\""=>{instr= !instr;},//chinese retest :(
+					_=>{},
+				}//here can refer to sbyblock for idea
+				if lbnum>0{temp.push_str(value);}
+				if i+1<printer.len(){continue}
+				else{temp_list.push(temp.clone());break}
+			}else if lbnum<0{//dont overthinking
+				temp_list.push(temp.clone());
+				break
+			}else{
+				match value{
+					"["=>{if !instr{lbnum+=1;}},
+					"]"=>{if !instr{break}},
+					"\""=>{instr= !instr;},
+					","=>{
+						if !instr&&!temp.is_empty(){
+							temp_list.push(temp.clone());
+							temp=String::new();
+						}else{temp.push_str(value);}
+					},
+					_=>{temp.push_str(value);},
+				}
+				if i+1<printer.len(){continue}
+				else{
+					if !temp.is_empty(){temp_list.push(temp.clone());}
+					break
+				}
+			}				
+		}//here done the comma separation
+		temp_list
+		//here gonna separate this as my original target which is lsbycomma<-little bit modify cuz it mainly target on list actually
+	}
+	fn get_value(&self,get:String)->variables{
+		variables::Null
+	}
 }//actually i can wrap it inside itself when encounter loop bruh
 
 	
@@ -882,29 +930,20 @@ fn main(){
 	}else{
 	/*
 	functions:HashMap<String,String>,
-	global_variables:HashMap<String,variables>,
-	error_log:Vec<String>,
-	local_variables:HashMap<String,variables>,
-	local_temp:Vec<HashMap<String,variables>>,
+	variables:HashMap<String,variables>,
 	code:String,
-	linenum:usize,
-	error_flag:bool,
 	*/
 		let content:String=fs::read_to_string(path[1].clone()).unwrap().to_string();
 		let mut smain=lekker{
 			functions:HashMap::new(),
-			global_variables:HashMap::new(),
-			error_log:Vec::new(),
-			local_variables:HashMap::new(),
-			local_temp:Vec::new(),
+			variables:HashMap::new(),
 			code:content.clone(),
-			linenum:0,
-			error_flag:false,
 		};
 		let tester=smain.sbyblock();
 		println!("init split:{:?}\n",tester.clone());
 		for i in tester.clone(){
 			println!("second split:{:?}",smain.sbyspace(i));
 		}
+		println!("comma split:{:?}",smain.lsbycomma(smain.sbyspace(tester[0].clone())[1].clone()));
 	}	
 }
