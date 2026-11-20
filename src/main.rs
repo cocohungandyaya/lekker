@@ -25,6 +25,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::process::exit;
+#[derive(Clone)]
 enum variables{
 	string(String),
 	numbers(f64),
@@ -202,7 +203,15 @@ impl lekker{
 		//here gonna separate this as my original target which is lsbycomma<-little bit modify cuz it mainly target on list actually
 	}
 	fn get_value(&self,get:String)->variables{
-		variables::Null
+		let mut temp:variables=variables::Null;
+		match self.variables.get(&get){
+			Some(v)=>{temp=v.clone();},
+			_=>{},
+		}
+		temp
+	}//uhh useless small function
+	fn print(&self,printable:Vec<String>){
+		//here call lsbycomma and write function to like check if it is a string ,number or a bool or variable name and if variable name then pass to get_value
 	}
 }//actually i can wrap it inside itself when encounter loop bruh
 
