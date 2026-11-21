@@ -233,7 +233,16 @@ impl lekker{
 				"\""=>{rtvar="str".to_string();},
 				_=>{
 					if temp.clone()=="True" || temp.clone()=="False"{rtvar="bool".to_string();}
-					else{rtvar="varname".to_string();}
+					else{
+						let mut is_maths:bool=true;
+						for i in &mut temp.clone().split("").collect::<Vec<_>>()[1..temp.clone().split("").collect::<Vec<_>>().len()-1]{
+							if !"1234567890.".contains(*i){
+								is_maths=false;
+							}
+						}
+						if is_maths{rtvar="num".to_string();}
+						else{rtvar="varname".to_string();}
+					}
 				},
 			}
 		}
@@ -268,7 +277,8 @@ impl lekker{
 			}
 		}
 		println!("");
-	}
+	}//here i shall make a assign of functions
+	//fn assign(&mut self,varname:String,value:String)->{
 }//actually i can wrap it inside itself when encounter loop bruh
 
 	
