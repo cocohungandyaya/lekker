@@ -272,13 +272,18 @@ impl lekker{
 				print!("{}",result);
 			}else if i.clone().split("").collect::<Vec<_>>()[1]=="["{
 				print!("{}",i.clone());
-			}else{
+			}else if i.clone=="\\n"{println!("");}
+			else{
 				print!("{}",i.clone().split("\"").collect::<Vec<_>>().join(""));
 			}
 		}
-		println!("");
 	}//here i shall make a assign of functions
-	//fn assign(&mut self,varname:String,value:String)->{
+	fn trans(&self,tran:String)->variables{
+		variables::Null;
+	}
+	fn assign(&mut self,varname:String,value:String){
+		//i shall make a fucntion that can auto translate everything into uhh variables
+	}
 }//actually i can wrap it inside itself when encounter loop bruh
 
 	
