@@ -149,6 +149,17 @@ impl lekker{
 	fn exec(&self){//uhh write this after the comma separation
 		//after a little bit of considering  i might just embed it to different which is assign and print then
 		//call the print function to perform printing(first function)
+		//call lsbycomma and pass to print
+		let init_code:Vec<String>=self.sbyblock();
+		for i in 0..init_code.len(){
+			//call sbyspace
+			let c_code:Vec<String>=self.sbyspace(init_code[i].clone());
+			if !c_code.is_empty(){
+				if c_code[0]=="print" && c_code.len()>1{
+					self.print(self.lsbycomma(c_code[1].clone()));
+				}
+			}
+		}
 	}
 	fn lsbycomma(&self,printwhat:String)->Vec<String>{//varname still printwhat but actually function normally,ignore the variable name
 		let printer:String=printwhat.clone();
@@ -227,9 +238,34 @@ impl lekker{
 			}
 		}
 		rtvar
-	}
+	}/*
+	string(String),
+	numbers(f64),
+	bl(bool),//True and False to represent then
+	list(Vec<variables>),
+	Null,
+	*/
 	fn print(&self,printable:Vec<String>){
-		//here call lsbycomma and call type_check if variable name then pass to get_value
+		//here call type_check if variable name then pass to get_value (*lsbycomma call in exec not here)
+		for i in printable.clone(){
+			let types:String=self.type_check(i.clone());
+			if types=="varname"{
+				let mut result:String=String::new();
+				let get_var:variables=self.get_value(i.clone());
+				match get_var{
+					variables::Null=>{result=String::from("Null");},
+					variables::bl(b)=>{if b{result=String::from("True");} else {result=String::from("False");}},
+					variables::string(s)=>{result=s.clone();},
+					variables::numbers(n)=>{result=n.to_string()},
+					variables::list(l)=>{//urr dont want make so then dont make,so then lekker cant print list out directly then me lazy
+					},
+				}
+				print!("{}",result);
+			}else{
+				print!("{}",i.clone().split("\"").collect::<Vec<_>>().join(""));
+			}
+		}
+		println!("");
 	}
 }//actually i can wrap it inside itself when encounter loop bruh
 
@@ -261,5 +297,7 @@ fn main(){
 		for i in ttemp{
 			println!("type:{}",smain.type_check(i.clone()));
 		}
+		println!("\n\n");
+		smain.exec();
 	}	
 }
