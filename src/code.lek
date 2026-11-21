@@ -1,4 +1,4 @@
-print "Hello#seems comments also works inside string huh# ","World!",[3.14,"fah[asdfasf,adfadf]",[2121212,123123123]],x,True
+print "Hello#seems comments also works inside string huh# ","World!,",[3.14,"fah[asdfasf,adfadf]",[2121212,123123123]],",",x,",",True
 print #hi here is a comment#"Hello World!"
 loop {
 	let x#hi here is a comment# be input
