@@ -155,7 +155,7 @@ impl lekker{
 			//call sbyspace
 			let c_code:Vec<String>=self.sbyspace(init_code[i].clone());
 			if !c_code.is_empty(){
-				if c_code[0]=="print" && c_code.len()>1{
+				if c_code[0]=="print" && c_code.len()==2{
 					self.print(self.lsbycomma(c_code[1].clone()));
 				}
 			}
@@ -261,6 +261,8 @@ impl lekker{
 					},
 				}
 				print!("{}",result);
+			}else if i.clone().split("").collect::<Vec<_>>()[1]=="["{
+				print!("{}",i.clone());
 			}else{
 				print!("{}",i.clone().split("\"").collect::<Vec<_>>().join(""));
 			}
