@@ -15,6 +15,8 @@
 20 Nov 2026:uhh english and chinese test both fail holly,so i done the lsbycomma which targetting on splitting variables inside list,also move old code to a new file,also i done write the fn get_value and define the directio for fn print,then i also done the fn type_check
 
 21 Nov 2026:Things becomes a little bit spaghetti but whatever i done the print function
+
+25 Nov 2026:I deleted so much and rewrite the exec functions,now those variables will store as String and translate when call out
 ## Features lekker will have:
 1. Error free running environment,if it encounter a error it will skip that line and keep running codes that didnt have error,so you need to be syntax perfect and logic perfect
 2. you can use comments everywhere(even inside string)
