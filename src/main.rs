@@ -25,19 +25,12 @@ use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::process::exit;
-#[derive(Clone)]
-enum variables{
-	string(String),
-	numbers(f64),
-	bl(bool),//True and False to represent then
-	list(Vec<variables>),
-	Null,
-}
 struct lekker{
 	functions:HashMap<String,String>,//here for using set to make function which call the sub-program PS:for future usage
-	variables:HashMap<String,variables>,
+	variables:HashMap<String,String>,
 	code:String,
 }
+//i decide to use uhh string i guess
 impl lekker{
 	fn sbyblock(&self)->Vec<String>{//still maybe just lower the level to split by blocks as first init split
 		let mut temp:String=String::new();
@@ -146,21 +139,6 @@ impl lekker{
 		}
 		temp_list				
 	}//done lmao next step is to do the separate by comma for list and print use
-	fn exec(&self){//uhh write this after the comma separation
-		//after a little bit of considering  i might just embed it to different which is assign and print then
-		//call the print function to perform printing(first function)
-		//call lsbycomma and pass to print
-		let init_code:Vec<String>=self.sbyblock();
-		for i in 0..init_code.len(){
-			//call sbyspace
-			let c_code:Vec<String>=self.sbyspace(init_code[i].clone());
-			if !c_code.is_empty(){
-				if c_code[0]=="print" && c_code.len()==2{
-					self.print(self.lsbycomma(c_code[1].clone()));
-				}
-			}
-		}
-	}
 	fn lsbycomma(&self,printwhat:String)->Vec<String>{//varname still printwhat but actually function normally,ignore the variable name
 		let printer:String=printwhat.clone();
 		let printer=printer.clone();
@@ -213,77 +191,46 @@ impl lekker{
 		temp_list
 		//here gonna separate this as my original target which is lsbycomma<-little bit modify cuz it mainly target on list actually
 	}
-	fn get_value(&self,get:String)->variables{
-		let mut temp:variables=variables::Null;
-		match self.variables.get(&get){
-			Some(v)=>{temp=v.clone();},
-			_=>{},
-		}
-		temp
-	}//uhh useless small function
-	fn type_check(&self,checker:String)->String{//return:str,num,bool,list,varname
-		let temp=checker.clone();
-		let temp_l=temp.split("").collect::<Vec<_>>();
-		let mut rtvar:String=String::new();//return value
-		if !temp_l.is_empty(){
-			let first=temp_l[1];//if [0] will be "" cuz split with "" lmao
-			//println!("first:{}",first);//disable state of comment if need check bug
-			match first{
-				"["=>{rtvar="list".to_string();},
-				"\""=>{rtvar="str".to_string();},
-				_=>{
-					if temp.clone()=="True" || temp.clone()=="False"{rtvar="bool".to_string();}
-					else{
-						let mut is_maths:bool=true;
-						for i in &mut temp.clone().split("").collect::<Vec<_>>()[1..temp.clone().split("").collect::<Vec<_>>().len()-1]{
-							if !"1234567890.".contains(*i){
-								is_maths=false;
+	//uhh idk kinda annoying
+	fn exec(&mut self){
+		let bruh:Vec<String>=self.sbyblock();
+		for x in 0..bruh.len(){
+			let this_line:Vec<String>=self.sbyspace(bruh[x].clone());
+			if !this_line.is_empty(){
+				if this_line[0]=="print"{
+					if 1<this_line.len(){
+						let temp:String=this_line[1..this_line.len()].join("").to_string();
+						for i in self.lsbycomma(temp.clone()){
+							if i.clone().split("").collect::<Vec<_>>()[1]=="\""{
+								for bla in i.clone().split("\\n").collect::<Vec<_>>().join("\n").split("\\t").collect::<Vec<_>>().join("\t").split("\"").collect::<Vec<_>>(){
+									print!("{}",bla);
+								}
+							}else if i.clone().split("").collect::<Vec<_>>()[1]=="["{
+								//somehow i want make the list that put after print just print as a normal string,that means if you want print list then need put list into a temp before uhh print
+								print!("{}",i.clone());
+							}else{
+								if i.clone()=="True" || i.clone()=="False"{
+									print!("{}",i.clone());
+								}else{
+									match i.clone().parse::<f64>(){
+										Ok(oof)=>{print!("{}",oof);},
+										Err(e)=>{
+											match self.variables.get(&i.clone()){
+												Some(haha)=>{print!("{}",haha);},
+												None=>{print!("Null");}
+											}
+										}
+									}
+								}
 							}
 						}
-						if is_maths{rtvar="num".to_string();}
-						else{rtvar="varname".to_string();}
 					}
-				},
-			}
-		}
-		rtvar
-	}/*
-	string(String),
-	numbers(f64),
-	bl(bool),//True and False to represent then
-	list(Vec<variables>),
-	Null,
-	*/
-	fn print(&self,printable:Vec<String>){
-		//here call type_check if variable name then pass to get_value (*lsbycomma call in exec not here)
-		for i in printable.clone(){
-			let types:String=self.type_check(i.clone());
-			if types=="varname"{
-				let mut result:String=String::new();
-				let get_var:variables=self.get_value(i.clone());
-				match get_var{
-					variables::Null=>{result=String::from("Null");},
-					variables::bl(b)=>{if b{result=String::from("True");} else {result=String::from("False");}},
-					variables::string(s)=>{result=s.clone();},
-					variables::numbers(n)=>{result=n.to_string()},
-					variables::list(l)=>{//urr dont want make so then dont make,so then lekker cant print list out directly then me lazy
-					},
 				}
-				print!("{}",result);
-			}else if i.clone().split("").collect::<Vec<_>>()[1]=="["{
-				print!("{}",i.clone());
-			}else if i.clone=="\\n"{println!("");}
-			else{
-				print!("{}",i.clone().split("\"").collect::<Vec<_>>().join(""));
+				//here write the assign function
 			}
 		}
-	}//here i shall make a assign of functions
-	fn trans(&self,tran:String)->variables{
-		variables::Null;
 	}
-	fn assign(&mut self,varname:String,value:String){
-		//i shall make a fucntion that can auto translate everything into uhh variables
-	}
+	
 }//actually i can wrap it inside itself when encounter loop bruh
 
 	
@@ -311,10 +258,6 @@ fn main(){
 		}
 		let ttemp:Vec<String>=smain.lsbycomma(smain.sbyspace(tester[0].clone())[1].clone());
 		println!("comma split:{:?}",ttemp);
-		for i in ttemp{
-			println!("type:{}",smain.type_check(i.clone()));
-		}
-		println!("\n\n");
 		smain.exec();
 	}	
 }
